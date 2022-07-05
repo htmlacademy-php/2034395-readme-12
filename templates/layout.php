@@ -110,7 +110,7 @@
     </div>
 </header>
 
-<?= htmlspecialchars($content) ?>
+<?= $content ?>
 
 <footer class="footer">
     <div class="footer__wrapper">

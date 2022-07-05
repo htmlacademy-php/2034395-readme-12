@@ -86,6 +86,10 @@
         </div>
         <div class="popular__posts">
             <?php foreach($data as $post): ?>
+                <?php
+                $post['date'] = generate_random_date(key($data));
+                $normalizedDate = normalizeDate($post['date'])
+                ?>
                 <article class="popular__post post <?= $post['type'] ?>">
                     <header class="post__header">
                         <h2><?= htmlspecialchars($post['title']) ?></h2>
@@ -153,7 +157,7 @@
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name"><?= htmlspecialchars($post['authorName']) ?></b>
-                                    <time class="post__time" datetime="">дата</time>
+                                    <time class="post__time" datetime="<?= $post['date'] ?>" title="<?= $post['date'] ?>"><?= $normalizedDate ?></time>
                                 </div>
                             </a>
                         </div>
