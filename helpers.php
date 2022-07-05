@@ -106,22 +106,13 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
     $mod10 = $number % 10;
     $mod100 = $number % 100;
 
-    switch (true) {
-        case ($mod100 >= 11 && $mod100 <= 20):
-            return $many;
-
-        case ($mod10 > 5):
-            return $many;
-
-        case ($mod10 === 1):
-            return $one;
-
-        case ($mod10 >= 2 && $mod10 <= 4):
-            return $two;
-
-        default:
-            return $many;
-    }
+    return match (true) {
+        $mod100 >= 11 && $mod100 <= 20 => $many,
+        $mod10 > 5 => $many,
+        $mod10 === 1 => $one,
+        $mod10 >= 2 && $mod10 <= 4 => $two,
+        default => $many,
+    };
 }
 
 /**
