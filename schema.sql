@@ -1,12 +1,12 @@
 CREATE DATABASE readme
-  DEFAULT CHARACTER SET utf8
+  DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8_general_ci;
 
 CREATE TABLE users (
                      id INT AUTO_INCREMENT PRIMARY KEY,
                      email VARCHAR(320) UNIQUE,
                      login VARCHAR(128) UNIQUE,
-                     password CHAR(64),
+                     `password` CHAR(64),
                      avatar_url VARCHAR(2048)
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE hashtags (
 
 CREATE TABLE content_types (
                              id INT AUTO_INCREMENT PRIMARY KEY,
-                             name CHAR(64),
+                             `name` CHAR(64),
                              class_name CHAR(64)
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE posts_hashtags (
 
 CREATE TABLE posts (
                      id INT AUTO_INCREMENT PRIMARY KEY,
-                     date TIMESTAMP,
+                     `date` TIMESTAMP,
                      title TINYTEXT,
                      content TEXT,
                      content_type INT,
@@ -46,7 +46,7 @@ CREATE TABLE posts (
 
 CREATE TABLE comments (
                         id INT AUTO_INCREMENT PRIMARY KEY,
-                        date TIMESTAMP,
+                        `date` TIMESTAMP,
                         content TEXT,
                         author INT,
                         post INT,
@@ -56,18 +56,33 @@ CREATE TABLE comments (
 
 CREATE TABLE likes (
                      id INT AUTO_INCREMENT PRIMARY KEY,
-                     user INT,
+                     `user` INT,
                      post INT,
-                     FOREIGN KEY (user) REFERENCES users (id),
+                     FOREIGN KEY (`user`) REFERENCES users (id),
                      FOREIGN KEY (post) REFERENCES posts (id)
 );
 
 CREATE TABLE messages (
                         id INT AUTO_INCREMENT PRIMARY KEY,
-                        date TIMESTAMP,
+                        `date` TIMESTAMP,
                         text TEXT,
                         sender INT,
                         recipient INT,
                         FOREIGN KEY (sender) REFERENCES users (id),
                         FOREIGN KEY (recipient) REFERENCES users (id)
+);
+
+CREATE TABLE likes (
+                     id INT AUTO_INCREMENT PRIMARY KEY,
+                     author INT,
+                     post INT,
+                     FOREIGN KEY (author) REFERENCES users (id),
+                     FOREIGN KEY (post) REFERENCES posts (id)
+);
+
+CREATE TABLE subscriptions (
+                             `user` INT,
+                             subscriber INT,
+                             FOREIGN KEY (`user`) REFERENCES users (id),
+                             FOREIGN KEY (subscriber) REFERENCES users (id)
 );
