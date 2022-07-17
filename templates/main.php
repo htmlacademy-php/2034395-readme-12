@@ -87,15 +87,14 @@
         <div class="popular__posts">
             <?php foreach($data as $post): ?>
                 <?php
-                $post['date'] = generate_random_date(key($data));
-                $normalizedDate = normalizeDate($post['date'])
+                $normalized_date = normalizeDate($post['date'])
                 ?>
-                <article class="popular__post post <?= $post['type'] ?>">
+                <article class="popular__post post <?= $post['class_name'] ?>">
                     <header class="post__header">
                         <h2><?= htmlspecialchars($post['title']) ?></h2>
                     </header>
                     <div class="post__main">
-                        <?php if($post['type'] == 'post-quote'): ?>
+                        <?php if($post['name'] == 'quote'): ?>
                             <blockquote>
                                 <p>
                                     <?= htmlspecialchars($post['content']) ?>
@@ -104,7 +103,7 @@
                             </blockquote>
                         <?php endif; ?>
 
-                        <?php if($post['type'] == 'post-text'): ?>
+                        <?php if($post['name'] == 'text'): ?>
                             <?php $postTextData = showData($post['content']) ?>
                             <p><?= htmlspecialchars($postTextData['text']) ?></p>
                             <?php if($postTextData['isLong']): ?>
@@ -112,13 +111,13 @@
                             <?php endif; ?>
                         <?php endif; ?>
 
-                        <?php if($post['type'] == 'post-photo'): ?>
+                        <?php if($post['name'] == 'photo'): ?>
                             <div class="post-photo__image-wrapper">
                                 <img src="img/<?= $post['content'] ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
                         <?php endif; ?>
 
-                        <?php if($post['type'] == 'post-link'): ?>
+                        <?php if($post['name'] == 'link'): ?>
                             <div class="post-link__wrapper">
                                 <a class="post-link__external" href="http://<?= $post['content'] ?>" title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
@@ -134,7 +133,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if($post['type'] == 'post-video'): ?>
+                        <?php if($post['name'] == 'video'): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
                                     <?= embed_youtube_cover($post['content']); ?>
@@ -153,11 +152,11 @@
                         <div class="post__author">
                             <a class="post__author-link" href="#" title="Автор">
                                 <div class="post__avatar-wrapper">
-                                    <img class="post__author-avatar" src="img/<?= $post['authorAvatarUrl'] ?>" alt="Аватар пользователя">
+                                    <img class="post__author-avatar" src="img/<?= $post['avatar_url'] ?>" alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
-                                    <b class="post__author-name"><?= htmlspecialchars($post['authorName']) ?></b>
-                                    <time class="post__time" datetime="<?= $post['date'] ?>" title="<?= $post['date'] ?>"><?= $normalizedDate ?></time>
+                                    <b class="post__author-name"><?= htmlspecialchars($post['login']) ?></b>
+                                    <time class="post__time" datetime="<?= $post['date'] ?>" title="<?= $post['date'] ?>"><?= $normalized_date ?></time>
                                 </div>
                             </a>
                         </div>
