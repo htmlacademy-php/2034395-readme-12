@@ -1,44 +1,28 @@
 <?php
 require_once 'helpers.php';
-$is_auth = rand(0, 1);
+require_once 'init.php';
 
-$data = [
-    [
-        "title" => "Цитата",
-        "type" => "post-quote",
-        "content" => "Мы в жизни любим только раз, а после ищем лишь похожих",
-        "authorName" => "Лариса",
-        "authorAvatarUrl" => "userpic-larisa-small.jpg",
-    ],
-    [
-        "title" => "Игра престолов",
-        "type" => "post-text",
-        "content" => "Не могу дождаться начала финального сезона своего любимого сериала!",
-        "authorName" => "Владик",
-        "authorAvatarUrl" => "userpic.jpg",
-    ],
-    [
-        "title" => "Наконец, обработал фотки!",
-        "type" => "post-photo",
-        "content" => "rock-medium.jpg",
-        "authorName" => "Виктор",
-        "authorAvatarUrl" => "userpic-mark.jpg",
-    ],
-    [
-        "title" => "Моя мечта",
-        "type" => "post-photo",
-        "content" => "coast-medium.jpg",
-        "authorName" => "Лариса",
-        "authorAvatarUrl" => "userpic-larisa-small.jpg",
-    ],
-    [
-        "title" => "Лучшие курсы",
-        "type" => "post-link",
-        "content" => "www.htmlacademy.ru",
-        "authorName" => "Вадик",
-        "authorAvatarUrl" => "userpic.jpg",
-    ],
-];
+if (!$link) {
+    $error = mysqli_connect_error();
+    print($error);
+    die();
+}
+
+// Получение списка постов
+$sql = 'SELECT * FROM posts p'
+    .   ' JOIN users u ON p.author = u.id'
+    .   ' JOIN content_types ct ON p.content_type = ct.id'
+    .   ' ORDER BY views DESC';
+$result = mysqli_query($link, $sql);
+
+if ($result === false) {
+    print_r("Ошибка выполнения запроса: " . mysqli_error($link));
+    die();
+}
+
+$data = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+$is_auth = rand(0, 1);
 
 function showData($text, $maxSymbols = 300): array
 {
