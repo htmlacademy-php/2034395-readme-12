@@ -151,7 +151,7 @@
                                 <p>
                                     <?= htmlspecialchars($post['content']) ?>
                                 </p>
-                                <cite>Неизвестный Автор</cite>
+                                <cite><?= htmlspecialchars($post['cite_author']) ?></cite>
                             </blockquote>
                         <?php endif; ?>
 
@@ -159,19 +159,19 @@
                             <?php $postTextData = showData($post['content']) ?>
                             <p><?= htmlspecialchars($postTextData['text']) ?></p>
                             <?php if($postTextData['isLong']): ?>
-                                <a class="post-text__more-link" href="#">Читать далее</a>
+                                <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать далее</a>
                             <?php endif; ?>
                         <?php endif; ?>
 
                         <?php if($post['name'] == 'photo'): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= $post['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="<?= $post['image_url'] ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
                         <?php endif; ?>
 
                         <?php if($post['name'] == 'link'): ?>
                             <div class="post-link__wrapper">
-                                <a class="post-link__external" href="http://<?= $post['content'] ?>" title="Перейти по ссылке">
+                                <a class="post-link__external" target="_blank" href="<?= $post['site_url'] ?>" title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
                                         <div class="post-link__icon-wrapper">
                                             <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
@@ -180,7 +180,7 @@
                                             <h3><?= htmlspecialchars($post['title']) ?></h3>
                                         </div>
                                     </div>
-                                    <span><?= htmlspecialchars($post['content']) ?></span>
+                                    <span><?= htmlspecialchars($post['site_url']) ?></span>
                                 </a>
                             </div>
                         <?php endif; ?>
@@ -188,10 +188,9 @@
                         <?php if($post['name'] == 'video'): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?= embed_youtube_cover($post['content']); ?>
-                                    <img src="../img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                                    <?= embed_youtube_cover($post['video_url']); ?>
                                 </div>
-                                <a href="../post-details.html" class="post-video__play-big button">
+                                <a href="../post.php?id=<?= $post['id'] ?>" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">
                                         <use xlink:href="#icon-video-play-big"></use>
                                     </svg>

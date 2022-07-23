@@ -152,13 +152,13 @@ function check_youtube_url($url)
     restore_error_handler();
 
     if (!is_array($headers)) {
-        return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
+        return false;
     }
 
     $err_flag = strpos($headers[0], '200') ? 200 : 404;
 
     if ($err_flag !== 200) {
-        return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
+        return false;
     }
 
     return true;

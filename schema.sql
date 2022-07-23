@@ -18,7 +18,8 @@ CREATE TABLE `hashtags` (
 CREATE TABLE `content_types` (
                                `id` INT AUTO_INCREMENT PRIMARY KEY,
                                `name` CHAR(64),
-                               `class_name` CHAR(64)
+                               `class_name` CHAR(64),
+                               `title` CHAR(64)
 );
 
 CREATE TABLE `posts_hashtags` (
@@ -32,6 +33,7 @@ CREATE TABLE `posts` (
                        `date` TIMESTAMP,
                        `title` TINYTEXT,
                        `content` TEXT,
+                       `cite_author` TEXT,
                        `content_type` INT,
                        `hashtags` INT,
                        `author` INT,
