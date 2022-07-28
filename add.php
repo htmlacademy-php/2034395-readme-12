@@ -59,21 +59,6 @@ function validateUrl($url, $type): array|bool {
     return false;
 }
 
-function validateFile($file, $path): array|bool {
-    if (!$file['name']) return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
-
-    $mime = $file['type'];
-    $name = $file['name'];
-    $tmp_name = $file['tmp_name'];
-
-    if ($mime != 'image/gif' && $mime != 'image/jpeg' && $mime != 'image/png') {
-        return ['target' => 'file', 'text' => 'Вы можете загрузить файлы только в следующих форматах: .png, .jpeg, .gif.'];
-    }
-
-    move_uploaded_file($tmp_name, $path . $name);
-    return false;
-}
-
 function validateData($data, $link, $type): array {
     $ct = getCategoryId($link, $type);
 
@@ -144,8 +129,6 @@ if (count($data) > 0) {
 
 $content_types = getContentTypes($link);
 
-$is_auth = rand(0, 1);
-
 $content = include_template('adding-post.php', [
     "content_types" => $content_types,
     "post_type" => $post_type,
@@ -153,7 +136,7 @@ $content = include_template('adding-post.php', [
 ]);
 $layout = include_template('layout.php', [
     "content" => $content,
-    "title" => "readme: популярное",
+    "title" => "readme: создание поста",
     "user_name" => "Kirill",
     "is_auth" => $is_auth,
 ]);

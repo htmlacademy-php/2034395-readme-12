@@ -101,7 +101,7 @@
 <header class="header">
     <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-            <a class="header__logo-link" href="../main.html">
+            <a class="header__logo-link" href="../index.php">
                 <img class="header__logo" src="../img/logo.svg" alt="Логотип readme" width="128" height="24">
             </a>
             <p class="header__topic">
@@ -121,27 +121,26 @@
             </div>
         </form>
         <div class="header__nav-wrapper">
-            <?php if ($is_auth == 1): ?>
-                <nav class="header__nav">
-                    <ul class="header__my-nav">
-                        <li class="header__my-page header__my-page--popular">
-                            <a class="header__page-link header__page-link--active" title="Популярный контент">
-                                <span class="visually-hidden">Популярный контент</span>
-                            </a>
-                        </li>
-                        <li class="header__my-page header__my-page--feed">
-                            <a class="header__page-link" href="../feed.html" title="Моя лента">
-                                <span class="visually-hidden">Моя лента</span>
-                            </a>
-                        </li>
-                        <li class="header__my-page header__my-page--messages">
-                            <a class="header__page-link" href="../messages.html" title="Личные сообщения">
-                                <span class="visually-hidden">Личные сообщения</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <ul class="header__user-nav">
+            <nav class="header__nav">
+                <ul class="header__my-nav">
+                    <li class="header__my-page header__my-page--popular">
+                        <a class="header__page-link header__page-link--active" title="Популярный контент">
+                            <span class="visually-hidden">Популярный контент</span>
+                        </a>
+                    </li>
+                    <li class="header__my-page header__my-page--feed">
+                        <a class="header__page-link" href="../feed.html" title="Моя лента">
+                            <span class="visually-hidden">Моя лента</span>
+                        </a>
+                    </li>
+                    <li class="header__my-page header__my-page--messages">
+                        <a class="header__page-link" href="../messages.html" title="Личные сообщения">
+                            <span class="visually-hidden">Личные сообщения</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="header__user-nav">
+                    <?php if ($is_auth): ?>
                         <li class="header__profile">
                             <a class="header__profile-link" href="#">
                                 <div class="header__avatar-wrapper">
@@ -149,9 +148,9 @@
                                          alt="Аватар профиля">
                                 </div>
                                 <div class="header__profile-name">
-                                    <span>
-                                        <?= htmlspecialchars($user_name); ?>
-                                    </span>
+                                        <span>
+                                            <?= htmlspecialchars($user_name); ?>
+                                        </span>
                                     <svg class="header__link-arrow" width="10" height="6">
                                         <use xlink:href="#icon-arrow-right-ad"></use>
                                     </svg>
@@ -162,25 +161,25 @@
                                     <ul class="header__profile-nav">
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link" href="#">
-                              <span class="header__profile-nav-text">
-                                Мой профиль
-                              </span>
+                                              <span class="header__profile-nav-text">
+                                                Мой профиль
+                                              </span>
                                             </a>
                                         </li>
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link" href="#">
-                              <span class="header__profile-nav-text">
-                                Сообщения
-                                <i class="header__profile-indicator">2</i>
-                              </span>
+                                              <span class="header__profile-nav-text">
+                                                Сообщения
+                                                <i class="header__profile-indicator">2</i>
+                                              </span>
                                             </a>
                                         </li>
 
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link" href="#">
-                              <span class="header__profile-nav-text">
-                                Выход
-                              </span>
+                                              <span class="header__profile-nav-text">
+                                                Выход
+                                              </span>
                                             </a>
                                         </li>
                                     </ul>
@@ -188,11 +187,21 @@
                             </div>
                         </li>
                         <li>
-                            <a class="header__post-button button button--transparent" href="../add.php?type=photo">Пост</a>
+                            <a class="header__post-button button button--transparent"
+                               href="../add.php?type=photo">Пост</a>
                         </li>
-                    </ul>
-                </nav>
-            <?php endif; ?>
+                    <?php else: ?>
+                        <li class="header__authorization">
+                            <a class="header__user-button header__authorization-button button" href="#">Вход</a>
+                        </li>
+                        <li>
+                            <a class="header__user-button header__user-button--active header__register-button button" href="../reg.php">
+                                Регистрация
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
     </div>
 </header>

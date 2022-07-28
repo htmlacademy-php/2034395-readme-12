@@ -61,8 +61,6 @@ if ($tab !== 'all') {
     $data = array_filter($data, "filterPosts");
 }
 
-$is_auth = rand(0, 1);
-
 $content = include_template('main.php', ['data' => $data, 'tab' => $tab]);
 $layout = include_template('layout.php', [
     "content" => $content,
