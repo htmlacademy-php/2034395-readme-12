@@ -12,7 +12,7 @@
                                     <p>
                                         <?= htmlspecialchars($post['content']); ?>
                                     </p>
-                                    <cite>Неизвестный Автор</cite>
+                                    <cite><?= htmlspecialchars($post['cite_author']) ?></cite>
                                 </blockquote>
                             </div>
                         </div>
@@ -31,12 +31,12 @@
                     <?php if ($post['name'] == 'link'): ?>
                         <div class="post__main">
                             <div class="post-link__wrapper">
-                                <a class="post-link__external" href="http://<?= htmlspecialchars($post['content']); ?>"
+                                <a class="post-link__external" target="_blank" href="<?= htmlspecialchars($post['site_url']); ?>"
                                    title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
                                         <div class="post-link__icon-wrapper">
                                             <img
-                                                src="https://www.google.com/s2/favicons?domain=<?= htmlspecialchars($post['content']); ?>"
+                                                src="https://www.google.com/s2/favicons?domain=<?= htmlspecialchars($post['site_url']); ?>"
                                                 alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
@@ -50,14 +50,14 @@
 
                     <?php if ($post['name'] == 'photo'): ?>
                         <div class="post-details__image-wrapper post-photo__image-wrapper">
-                            <img src="../img/<?= htmlspecialchars($post['content']); ?>" alt="Фото от пользователя"
+                            <img src="<?= htmlspecialchars($post['image_url']); ?>" alt="Фото от пользователя"
                                  width="760" height="507">
                         </div>
                     <?php endif; ?>
 
                     <?php if ($post['name'] == 'video'): ?>
                         <div class="post-details__image-wrapper post-photo__image-wrapper">
-                            <?= embed_youtube_video($post['content']); ?>
+                            <?= embed_youtube_video($post['video_url']); ?>
                         </div>
                     <?php endif; ?>
                     <div class="post__indicators">
