@@ -137,6 +137,21 @@ function include_template(string $name, array $data = []): string
     return ob_get_clean();
 }
 
+function validateFile($file, $path): array|bool {
+    if (!$file['name']) return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
+
+    $mime = $file['type'];
+    $name = $file['name'];
+    $tmp_name = $file['tmp_name'];
+
+    if ($mime != 'image/gif' && $mime != 'image/jpeg' && $mime != 'image/png') {
+        return ['target' => 'file', 'text' => 'Вы можете загрузить файлы только в следующих форматах: .png, .jpeg, .gif.'];
+    }
+
+    move_uploaded_file($tmp_name, $path . $name);
+    return false;
+}
+
 /**
  * Функция проверяет доступно ли видео по ссылке на youtube
  * @param string $url ссылка на видео

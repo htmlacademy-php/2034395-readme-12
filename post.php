@@ -32,8 +32,7 @@ function normalizeSubs($var): string {
     return $word;
 }
 
-function getPostById($link, $id)
-{
+function getPostById($link, $id) {
     if (!$link) {
         $error = mysqli_connect_error();
         print($error);
@@ -80,15 +79,13 @@ function getComments($link, $id): array {
 $post = getPostById($link, $post_id);
 $comments = getComments($link, $post_id);
 
-$is_auth = rand(0, 1);
-
 $content = include_template('post-details.php', [
     'post' => $post[0],
     'comments' => $comments,
 ]);
 $layout = include_template('layout.php', [
     "content" => $content,
-    "title" => "readme: популярное",
+    "title" => "readme: просмотр поста",
     "user_name" => "Kirill",
     "is_auth" => $is_auth,
 ]);
