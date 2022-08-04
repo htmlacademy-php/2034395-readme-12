@@ -210,7 +210,7 @@
                             <div class="adding-post__buttons">
                                 <button class="adding-post__submit button button--main" type="submit">Опубликовать
                                 </button>
-                                <a class="adding-post__close" href="../index.php?tab=all">Закрыть</a>
+                                <a class="adding-post__close" href="../popular.php?tab=all">Закрыть</a>
                             </div>
                         </form>
                     </section>
@@ -287,7 +287,7 @@
                             <div class="adding-post__buttons">
                                 <button class="adding-post__submit button button--main" type="submit">Опубликовать
                                 </button>
-                                <a class="adding-post__close" href="../index.php?tab=all">Закрыть</a>
+                                <a class="adding-post__close" href="../popular.php?tab=all">Закрыть</a>
                             </div>
                         </form>
                     </section>
@@ -362,7 +362,7 @@
                             <div class="adding-post__buttons">
                                 <button class="adding-post__submit button button--main" type="submit">Опубликовать
                                 </button>
-                                <a class="adding-post__close" href="../index.php?tab=all">Закрыть</a>
+                                <a class="adding-post__close" href="../popular.php?tab=all">Закрыть</a>
                             </div>
                         </form>
                     </section>
@@ -453,7 +453,7 @@
                             <div class="adding-post__buttons">
                                 <button class="adding-post__submit button button--main" type="submit">Опубликовать
                                 </button>
-                                <a class="adding-post__close" href="../index.php?tab=all">Закрыть</a>
+                                <a class="adding-post__close" href="../popular.php?tab=all">Закрыть</a>
                             </div>
                         </form>
                     </section>
@@ -528,7 +528,7 @@
                             <div class="adding-post__buttons">
                                 <button class="adding-post__submit button button--main" type="submit">Опубликовать
                                 </button>
-                                <a class="adding-post__close" href="../index.php?tab=all">Закрыть</a>
+                                <a class="adding-post__close" href="../popular.php?tab=all">Закрыть</a>
                             </div>
                         </form>
                     </section>

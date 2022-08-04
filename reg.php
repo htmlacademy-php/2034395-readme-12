@@ -1,6 +1,5 @@
 <?php
-require_once 'helpers.php';
-require_once 'init.php';
+require_once 'requires_auth.php';
 
 $data = $_POST;
 
@@ -64,10 +63,7 @@ function registerUser($link, $data) {
         print($error);
         die();
     }
-
-    $sql = "INSERT INTO `users` (`email`, `login`, `password`)" .
-        " VALUES (?, ?, ?)";
-
+    $sql = "INSERT INTO `users` (`email`, `login`, `password`) VALUES (?, ?, ?)";
     $stmt = db_get_prepare_stmt($link, $sql, $data['data']);
 
     mysqli_stmt_execute($stmt);
@@ -79,6 +75,11 @@ if (count($data) > 0) {
 
     if (count($reg_data['errors']) == 0) {
         registerUser($link, $reg_data);
+
+        $now = time();
+        $expires = strtotime('+1 month', $now);
+
+        setUserDataCookies($reg_data['data']['email'], $reg_data['data']['password'], $expires);
         header("Location: /");
         exit();
     }
@@ -88,7 +89,7 @@ $content = include_template('registration.php', ["errors" => $reg_data['errors']
 $layout = include_template('layout.php', [
     "content" => $content,
     "title" => "readme: регистрация",
-    "user_name" => "Kirill",
+    "user" => $user,
     "is_auth" => $is_auth,
 ]);
 

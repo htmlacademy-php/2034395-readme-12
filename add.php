@@ -1,9 +1,8 @@
 <?php
-require_once 'helpers.php';
-require_once 'init.php';
+require_once 'requires_guest.php';
 
 $data = $_POST;
-$post_type = $_GET['type'];
+$post_type = $_GET['type'] ?? 'photo';
 
 $post_data = ['errors' => []];
 
@@ -26,25 +25,6 @@ function getCategoryId($link, $type) {
     return mysqli_fetch_all($result, MYSQLI_ASSOC)[0]['id'];
 }
 
-function getContentTypes($link): array {
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
-
-    $sql = "SELECT * FROM content_types";
-
-    $result = mysqli_query($link, $sql);
-
-    if ($result === false) {
-        print_r("Ошибка выполнения запроса: " . mysqli_error($link));
-        die();
-    }
-
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-}
-
 function validateUrl($url, $type): array|bool {
     $isUrlValid = filter_var($url, FILTER_VALIDATE_URL);
 
@@ -59,7 +39,7 @@ function validateUrl($url, $type): array|bool {
     return false;
 }
 
-function validateData($data, $link, $type): array {
+function validateData($data, $link, $type, $user): array {
     $ct = getCategoryId($link, $type);
 
     $files_path = __DIR__ . '/uploads/';
@@ -95,6 +75,7 @@ function validateData($data, $link, $type): array {
             "content" => $content,
             "cite_author" => $author,
             "content_type" => $ct,
+            "author" => $user['id'],
             "image_url" => $image_url,
             "video_url" => $video_url,
             "site_url" => $site_url,
@@ -111,7 +92,7 @@ function addPost($link, $post) {
     }
 
     $sql = "INSERT INTO `posts` (`date`, `title`, `content`, `cite_author`, `content_type`, `author`, `image_url`, `video_url`, `site_url`, `views`)" .
-        " VALUES (NOW(), ?, ?, ?, ?, 1, ?, ?, ?, 0)";
+        " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
     $stmt = db_get_prepare_stmt($link, $sql, $post['data']);
 
@@ -120,24 +101,23 @@ function addPost($link, $post) {
 }
 
 if (count($data) > 0) {
-    $post_data = validateData($data, $link, $post_type);
+    $post_data = validateData($data, $link, $post_type, $user);
 
     if (count($post_data['errors']) == 0) {
         addPost($link, $post_data);
+        header("Location: /popular.php");
+        exit();
     }
 }
 
-$content_types = getContentTypes($link);
-
 $content = include_template('adding-post.php', [
-    "content_types" => $content_types,
     "post_type" => $post_type,
     "errors" => $post_data['errors'],
 ]);
 $layout = include_template('layout.php', [
     "content" => $content,
     "title" => "readme: создание поста",
-    "user_name" => "Kirill",
+    "user" => $user,
     "is_auth" => $is_auth,
 ]);
 

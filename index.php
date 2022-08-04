@@ -1,72 +1,46 @@
 <?php
-require_once 'helpers.php';
-require_once 'init.php';
+require_once 'requires_auth.php';
 
-$tab = $_GET['tab'] ?? 'all';
+$data = $_POST;
 
-function showData($text, $maxSymbols = 300): array
-{
-    $array = explode(' ', $text);
-    $result = [
-        'text' => null,
-        'isLong' => 0
-    ];
+function authUser($data, $link): bool {
+    $email = $data['email'] ?? null;
+    $password = $data['password'] ?? null;
 
-    $symbols = 0;
-
-    foreach($array as $word) {
-        $symbols = $symbols + strlen($word);
-
-        if ($symbols < $maxSymbols) {
-            $result['text'] = $result['text'] . ' ' . $word;
-        } else {
-            $result['text'] = $result['text'] . '...';
-            $result['isLong'] = 1;
-            break;
-        }
-    }
-
-    return $result;
-}
-
-function getPostsList($link) {
     if (!$link) {
         $error = mysqli_connect_error();
         print($error);
         die();
     }
 
-    $sql = "SELECT p.*, u.avatar_url, u.login, ct.name, ct.class_name FROM posts p"
-        .   " JOIN users u ON p.author = u.id"
-        .   " JOIN content_types ct ON p.content_type = ct.id"
-        .   " ORDER BY views DESC";
+    $sql = "SELECT * FROM `users` u WHERE u.email = ?";
 
-    $result = mysqli_query($link, $sql);
+    $stmt = db_get_prepare_stmt($link, $sql, [$email]);
 
-    if ($result === false) {
-        print_r("Ошибка выполнения запроса: " . mysqli_error($link));
-        die();
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $user = mysqli_fetch_assoc($result);
+
+    if (!password_verify($password, $user['password'])) return false;
+
+    $now = time();
+    $expires = strtotime('+1 month', $now);
+
+    setUserDataCookies($email, $user['password'], $expires);
+
+    return true;
+}
+
+if (isset($data['email'])) {
+    $is_auth = authUser($data, $link);
+
+    if ($is_auth) {
+        header("Location: /popular.php");
+        exit();
     }
-
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function filterPosts($post) {
-    return $post['name'] === $_GET['tab'];
-}
+$content = include_template('main.php');
 
-$data = getPostsList($link);
-
-if ($tab !== 'all') {
-    $data = array_filter($data, "filterPosts");
-}
-
-$content = include_template('main.php', ['data' => $data, 'tab' => $tab]);
-$layout = include_template('layout.php', [
-    "content" => $content,
-    "title" => "readme: популярное",
-    "user_name" => "Kirill",
-    "is_auth" => $is_auth,
-]);
-
-print($layout);
+print($content);
