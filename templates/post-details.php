@@ -1,3 +1,8 @@
+<?php
+$avatar = $post['avatar_url'] ?? 'userpic.jpg';
+
+?>
+
 <main class="page__main page__main--publication">
     <div class="container">
         <h1 class="page__title page__title--publication"><?= htmlspecialchars($post['title']); ?></h1>
@@ -101,7 +106,7 @@
                     <div class="comments">
                         <form class="comments__form form" action="#" method="post">
                             <div class="comments__my-avatar">
-                                <img class="comments__picture" src="../img/userpic-medium.jpg"
+                                <img class="comments__picture" src="../img/<?= $avatar ?>"
                                      alt="Аватар пользователя">
                             </div>
                             <div class="form__input-section form__input-section--error">
@@ -123,8 +128,8 @@
                                 <?php foreach($comments as $el): ?>
                                     <li class="comments__item user">
                                         <div class="comments__avatar">
-                                            <a class="user__avatar-link" href="../img/<?= $el['avatar_url'] ?>">
-                                                <img class="comments__picture" src="../img/<?= $el['avatar_url'] ?>"
+                                            <a class="user__avatar-link" href="../img/<?= $el['avatar_url'] ?? 'userpic.jpg' ?>">
+                                                <img class="comments__picture" src="../img/<?= $el['avatar_url'] ?? 'userpic.jpg' ?>"
                                                      alt="Аватар пользователя">
                                             </a>
                                         </div>
@@ -157,7 +162,7 @@
                     <div class="post-details__user-info user__info">
                         <div class="post-details__avatar user__avatar">
                             <a class="post-details__avatar-link user__avatar-link" href="#">
-                                <img class="post-details__picture user__picture" src="../img/<?= $post['avatar_url'] ?>"
+                                <img class="post-details__picture user__picture" src="../img/<?= $avatar ?>"
                                      alt="Аватар пользователя">
                             </a>
                         </div>

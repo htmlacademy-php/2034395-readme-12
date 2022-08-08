@@ -152,6 +152,11 @@ function validateFile($file, $path): array|bool {
     return false;
 }
 
+function setUserDataCookies($email, $password, $expires): void {
+    setcookie('user_email', $email, $expires);
+    setcookie('user_password', $password, $expires);
+}
+
 /**
  * Функция проверяет доступно ли видео по ссылке на youtube
  * @param string $url ссылка на видео
