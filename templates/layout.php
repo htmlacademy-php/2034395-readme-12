@@ -113,10 +113,10 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                 micro blogging
             </p>
         </div>
-        <form class="header__search-form form" action="#" method="get">
+        <form class="header__search-form form" action="../search.php" method="get">
             <div class="header__search">
                 <label class="visually-hidden">Поиск</label>
-                <input class="header__search-input form__input" type="search">
+                <input class="header__search-input form__input" name="search" type="search">
                 <button class="header__search-button button" type="submit">
                     <svg class="header__search-icon" width="18" height="18">
                         <use xlink:href="#icon-search"></use>
