@@ -304,3 +304,44 @@ function normalizeDate($date): string {
 
     return "$interval $correctWord назад";
 }
+
+function getContentClassById($link, $id): string {
+    $sql = "SELECT * FROM `content_types`" .
+        " WHERE `id` = '$id'";
+
+    $result = mysqli_query($link, $sql);
+
+    if ($result === false) {
+        print_r("Ошибка выполнения запроса: " . mysqli_error($link));
+        die();
+    }
+
+    $result_arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    return $result_arr[0]["class_name"];
+}
+
+function showData($text, $maxSymbols = 300): array
+{
+    $array = explode(' ', $text);
+    $result = [
+        'text' => null,
+        'isLong' => 0
+    ];
+
+    $symbols = 0;
+
+    foreach($array as $word) {
+        $symbols = $symbols + strlen($word);
+
+        if ($symbols < $maxSymbols) {
+            $result['text'] = $result['text'] . ' ' . $word;
+        } else {
+            $result['text'] = $result['text'] . '...';
+            $result['isLong'] = 1;
+            break;
+        }
+    }
+
+    return $result;
+}

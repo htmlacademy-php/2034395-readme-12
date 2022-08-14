@@ -1,6 +1,8 @@
-CREATE DATABASE readme
+CREATE DATABASE readme2
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_general_ci;
+
+use readme2;
 
 CREATE TABLE `users` (
                        `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,3 +82,5 @@ CREATE TABLE `subscriptions` (
                                FOREIGN KEY (`user`) REFERENCES `users` (`id`),
                                FOREIGN KEY (`subscriber`) REFERENCES `users` (`id`)
 );
+
+CREATE FULLTEXT INDEX `posts_ft_search` ON `posts` (`title`, `content`);

@@ -3,31 +3,6 @@ require_once 'requires_guest.php';
 
 $tab = $_GET['tab'] ?? 'all';
 
-function showData($text, $maxSymbols = 300): array
-{
-    $array = explode(' ', $text);
-    $result = [
-        'text' => null,
-        'isLong' => 0
-    ];
-
-    $symbols = 0;
-
-    foreach($array as $word) {
-        $symbols = $symbols + strlen($word);
-
-        if ($symbols < $maxSymbols) {
-            $result['text'] = $result['text'] . ' ' . $word;
-        } else {
-            $result['text'] = $result['text'] . '...';
-            $result['isLong'] = 1;
-            break;
-        }
-    }
-
-    return $result;
-}
-
 function getPostsList($link) {
     if (!$link) {
         $error = mysqli_connect_error();
