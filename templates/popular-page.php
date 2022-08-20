@@ -1,5 +1,5 @@
 <?php
-$avatar = $post['avatar_url'] ?? 'userpic.jpg';
+$profile = getUserData($link, 'id', $user['id']);
 
 ?>
 
@@ -140,7 +140,11 @@ $avatar = $post['avatar_url'] ?? 'userpic.jpg';
         <div class="popular__posts">
             <?php foreach($data as $post): ?>
                 <?php
-                $normalized_date = normalizeDate($post['date'])
+                    $normalized_date = normalizeDate($post['date']);
+                    $comments = getComments($link, $post['id']);
+                    $likes = getPostLikes($link, $post['id']);
+
+                    $is_liked = isPostLiked($link, $user['id'], $post['id']);
                 ?>
                 <article class="popular__post post <?= $post['class_name'] ?>">
                     <header class="post__header">
@@ -206,33 +210,45 @@ $avatar = $post['avatar_url'] ?? 'userpic.jpg';
                     </div>
                     <footer class="post__footer">
                         <div class="post__author">
-                            <a class="post__author-link" href="#" title="Автор">
+                            <a class="post__author-link" href="profile.php?id=<?= $post['author'] ?>" title="Автор">
                                 <div class="post__avatar-wrapper">
-                                    <img class="post__author-avatar" src="img/<?= $avatar ?>" alt="Аватар пользователя">
+                                    <img class="post__author-avatar" src="../img/<?= $profile['avatar_url'] ?? 'userpic.jpg' ?>" alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name"><?= htmlspecialchars($post['login']) ?></b>
-                                    <time class="post__time" datetime="<?= $post['date'] ?>" title="<?= $post['date'] ?>"><?= $normalized_date ?></time>
+                                    <time class="post__time" datetime="<?= $post['date'] ?>" title="<?= $post['date'] ?>"><?= $normalized_date . " назад" ?></time>
                                 </div>
                             </a>
                         </div>
                         <div class="post__indicators">
                             <div class="post__buttons">
-                                <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                                <?php if (!$is_liked): ?>
+                                    <a
+                                        class="post__indicator post__indicator--likes button"
+                                        href="like.php?action=like&address=popular&post_id=<?= $post['id'] ?>"
+                                        title="Поставить лайк"
+                                    >
+                                <?php else: ?>
+                                    <a
+                                        class="post__indicator post__indicator--likes-active button"
+                                        href="like.php?action=unlike&address=popular&post_id=<?= $post['id'] ?>"
+                                        title="Убрать лайк"
+                                    >
+                                <?php endif; ?>
                                     <svg class="post__indicator-icon" width="20" height="17">
                                         <use xlink:href="#icon-heart"></use>
                                     </svg>
                                     <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                         <use xlink:href="#icon-heart-active"></use>
                                     </svg>
-                                    <span>0</span>
+                                    <span><?= count($likes) ?></span>
                                     <span class="visually-hidden">количество лайков</span>
                                 </a>
-                                <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+                                <a class="post__indicator post__indicator--comments button" href="post.php?id=<?= $post['id'] ?>" title="Комментарии">
                                     <svg class="post__indicator-icon" width="19" height="17">
                                         <use xlink:href="#icon-comment"></use>
                                     </svg>
-                                    <span>0</span>
+                                    <span><?= count($comments) ?></span>
                                     <span class="visually-hidden">количество комментариев</span>
                                 </a>
                             </div>
@@ -241,5 +257,21 @@ $avatar = $post['avatar_url'] ?? 'userpic.jpg';
                 </article>
             <?php endforeach; ?>
         </div>
+        <?php if ($posts_count > 9): ?>
+            <div class="popular__page-links">
+                <a
+                    class="popular__page-link popular__page-link--prev button button--gray"
+                    href="popular.php?tab=all&page=<?= max($page - 1, 1) ?>&sort=views"
+                >
+                    Предыдущая страница
+                </a>
+                <a
+                    class="popular__page-link popular__page-link--next button button--gray"
+                    href="popular.php?tab=all&page=<?= min($page + 1, round($posts_count / 6)) ?>&sort=views"
+                >
+                    Следующая страница
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 </section>

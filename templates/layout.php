@@ -106,7 +106,7 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
 <header class="header">
     <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-            <a class="header__logo-link" href="../popular.php">
+            <a class="header__logo-link" href="../popular.php?tab=all&page=1&sort=views">
                 <img class="header__logo" src="../img/logo.svg" alt="Логотип readme" width="128" height="24">
             </a>
             <p class="header__topic">
@@ -129,7 +129,7 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
-                        <a class="header__page-link <?php if($target == 'popular'): ?>header__page-link--active<?php endif; ?>" title="Популярный контент" href="../popular.php">
+                        <a class="header__page-link <?php if($target == 'popular'): ?>header__page-link--active<?php endif; ?>" title="Популярный контент" href="../popular.php?tab=all&page=1&sort=views">
                             <span class="visually-hidden">Популярный контент</span>
                         </a>
                     </li>
@@ -147,7 +147,7 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                 <ul class="header__user-nav">
                     <?php if ($is_auth): ?>
                         <li class="header__profile">
-                            <a class="header__profile-link" href="#">
+                            <a class="header__profile-link" href="profile.php?id=<?= $user['id'] ?>">
                                 <div class="header__avatar-wrapper">
                                     <img class="header__profile-avatar" src="../img/<?= $avatar ?>"
                                          alt="Аватар профиля">
@@ -165,7 +165,7 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                                 <div class="header__profile-tooltip">
                                     <ul class="header__profile-nav">
                                         <li class="header__profile-nav-item">
-                                            <a class="header__profile-nav-link" href="#">
+                                            <a class="header__profile-nav-link" href="profile.php?id=<?= $user['id']?>">
                                               <span class="header__profile-nav-text">
                                                 Мой профиль
                                               </span>

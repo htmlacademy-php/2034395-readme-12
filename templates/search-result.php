@@ -25,7 +25,7 @@
                                     </div>
                                     <div class="post__info">
                                         <b class="post__author-name"><?= htmlspecialchars($post["login"]) ?></b>
-                                        <span class="post__time"><?= $normalized_date ?></span>
+                                        <span class="post__time"><?= $normalized_date . " назад" ?></span>
                                     </div>
                                 </a>
                             </header>
