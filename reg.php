@@ -8,7 +8,7 @@ $reg_data = ['errors' => []];
 function validateEmail($email, $link): array|bool {
     $sql = "SELECT * FROM `users` u WHERE u.email = ?";
 
-    $result = db_query_prepare_stmt($link, $sql, [$email], 'assoc');
+    $result = db_query_prepare_stmt($link, $sql, [$email], QUERY_ASSOC);
 
     $isEmailUsed = count($result) > 0;
 
@@ -49,7 +49,7 @@ function validateData($data, $link) {
 function registerUser($link, $data) {
     $sql = "INSERT INTO `users` (`email`, `login`, `password`, `registration_date`) VALUES (?, ?, ?, NOW())";
 
-    return db_query_prepare_stmt($link, $sql, $data['data'], 'execute');
+    return db_query_prepare_stmt($link, $sql, $data['data'], QUERY_EXECUTE);
 }
 
 if (count($data) > 0) {

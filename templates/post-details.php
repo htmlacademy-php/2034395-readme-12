@@ -4,7 +4,7 @@
     $sql = "SELECT * FROM `posts` p" .
         " WHERE p.author = ?";
 
-    $user_posts = db_query_prepare_stmt($link, $sql, [$post['author']], 'assoc');
+    $user_posts = db_query_prepare_stmt($link, $sql, [$post['author']], QUERY_ASSOC);
 
     $is_owner = false;
     $is_subscribed = checkIsUserSubscribed($link, $user['id'], $profile['id']);

@@ -19,10 +19,13 @@ if (isset($address)) {
     else if ($action === 'unsub' && $is_subscribed) $sql = "DELETE FROM `subscriptions` s WHERE s.user = ? AND s.subscriber = ?";
     else $error = true;
 
-    if (!$error) db_query_prepare_stmt($link, $sql, [$target_id, $user['id']], 'execute');
+    if (!$error) db_query_prepare_stmt($link, $sql, [$target_id, $user['id']], QUERY_EXECUTE);
 
-    if (isset($profile_id)) header("Location: /" . $address . ".php?id=" . $profile_id);
-    else header("Location: /" . $address . ".php?id=" . $post_id);
-} else header("Location: /");
+    match ($address) {
+        'profile' => header("Location: /" . $address . ".php?id=" . $profile_id),
+        'post' => header("Location: /" . $address . ".php?id=" . $post_id),
+        default => header("Location: /")
+    };
+}
 
 exit();

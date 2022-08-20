@@ -11,7 +11,7 @@ function getPostsList($link, $page = 1, $sort = 'views') {
         .   " JOIN `content_types` ct ON p.content_type = ct.id"
         .   " ORDER BY `views` DESC";
 
-    $result = db_query_prepare_stmt($link, $sql, [], 'assoc');
+    $result = db_query_prepare_stmt($link, $sql, [], QUERY_ASSOC);
 
     $offset = 0;
 

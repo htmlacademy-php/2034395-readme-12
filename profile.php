@@ -13,11 +13,13 @@ if (isset($user_id)) {
         " JOIN `content_types` ct ON p.content_type = ct.id" .
         " WHERE p.author = ?";
 
-    $posts_data = db_query_prepare_stmt($link, $sql, [$user_id], 'assoc');
+    $posts_data = db_query_prepare_stmt($link, $sql, [$user_id], QUERY_ASSOC);
 
     $profile_data = getUserData($link, 'id', $user_id);
 
-    if ($user_id == $user['id']) $is_owner = true;
+    if ($user_id == $user['id']) {
+        $is_owner = true;
+    }
 }
 
 $content = include_template('profile-page.php', [

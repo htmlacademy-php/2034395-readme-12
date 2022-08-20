@@ -9,7 +9,7 @@ function authUser($data, $link): bool {
 
     $sql = "SELECT * FROM `users` u WHERE u.email = ?";
 
-    $user = db_query_prepare_stmt($link, $sql, [$email], 'assoc');
+    $user = db_query_prepare_stmt($link, $sql, [$email], QUERY_ASSOC);
 
     if (!password_verify($password, $user[0]['password'])) return false;
 
