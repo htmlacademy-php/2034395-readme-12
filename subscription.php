@@ -35,8 +35,8 @@ if (isset($address)) {
     }
 
     match ($address) {
-        'profile' => header("Location: /src/php/" . $address . ".php?id=" . $profile_id),
-        'post' => header("Location: /src/php/" . $address . ".php?id=" . $post_id),
+        'profile' => header("Location: /" . $address . ".php?id=" . $profile_id),
+        'post' => header("Location: /" . $address . ".php?id=" . $post_id),
         default => header("Location: /")
     };
 }
