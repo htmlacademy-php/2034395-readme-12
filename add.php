@@ -6,14 +6,16 @@ $post_type = $_GET['type'] ?? 'photo';
 
 $post_data = ['errors' => []];
 
-function getCategoryId($link, $type) {
+function getCategoryId($link, $type)
+{
     $sql = "SELECT ct.id FROM content_types ct WHERE `name` = ?";
 
     $result = db_query_prepare_stmt($link, $sql, [$type]);
     return $result['id'];
 }
 
-function validateUrl($url, $type): array|bool {
+function validateUrl($url, $type): array|bool
+{
     $isUrlValid = filter_var($url, FILTER_VALIDATE_URL);
 
     if (strlen($url) == 0 || !$isUrlValid) {
@@ -27,7 +29,8 @@ function validateUrl($url, $type): array|bool {
     return false;
 }
 
-function validateData($data, $link, $type, $user): array {
+function validateData($data, $link, $type, $user): array
+{
     $ct = getCategoryId($link, $type);
 
     $files_path = __DIR__ . '/uploads/';
@@ -46,16 +49,33 @@ function validateData($data, $link, $type, $user): array {
     $url = null;
 
     if ($type == 'photo') {
-        if ($file) $url = $files_path . $file['name'];
-        else $url = $image_url;
+        if ($file) {
+            $url = $files_path . $file['name'];
+        } else {
+            $url = $image_url;
+        }
+    } else {
+        if ($type == 'video') {
+            $url = $video_url;
+        } else {
+            if ($type == 'link') {
+                $url = $site_url;
+            }
+        }
     }
-    else if ($type == 'video') $url = $video_url;
-    else if ($type == 'link') $url = $site_url;
 
-    if (strlen($title) == 0) $errors[] = ['target' => 'title', 'text' => 'Укажите заголовок.'];
-    if (strlen($title) > 70) $errors[] = ['target' => 'title', 'text' => 'Заголовок не может превышать 70 символов.'];
-    if ($url && validateUrl($url, $type)) $errors[] = validateUrl($url, $type);
-    if ($file && validateFile($file, $files_path)) $errors[] = validateFile($file, $files_path);
+    if (strlen($title) == 0) {
+        $errors[] = ['target' => 'title', 'text' => 'Укажите заголовок.'];
+    }
+    if (strlen($title) > 70) {
+        $errors[] = ['target' => 'title', 'text' => 'Заголовок не может превышать 70 символов.'];
+    }
+    if ($url && validateUrl($url, $type)) {
+        $errors[] = validateUrl($url, $type);
+    }
+    if ($file && validateFile($file, $files_path)) {
+        $errors[] = validateFile($file, $files_path);
+    }
 
     return [
         "data" => [
@@ -72,7 +92,8 @@ function validateData($data, $link, $type, $user): array {
     ];
 }
 
-function addPost($link, $post) {
+function addPost($link, $post)
+{
     $sql = "INSERT INTO `posts` (`date`, `title`, `content`, `cite_author`, `content_type`, `author`, `image_url`, `video_url`, `site_url`, `views`)" .
         " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 

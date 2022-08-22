@@ -3,7 +3,8 @@ require_once 'requires_auth.php';
 
 $data = $_POST;
 
-function authUser($data, $link): bool {
+function authUser($data, $link): bool
+{
     $email = $data['email'] ?? null;
     $password = $data['password'] ?? null;
 
@@ -11,7 +12,9 @@ function authUser($data, $link): bool {
 
     $user = db_query_prepare_stmt($link, $sql, [$email], QUERY_ASSOC);
 
-    if (!password_verify($password, $user[0]['password'])) return false;
+    if (!password_verify($password, $user[0]['password'])) {
+        return false;
+    }
 
     $now = time();
     $expires = strtotime('+1 month', $now);

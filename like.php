@@ -15,12 +15,12 @@ if (isset($address)) {
 
     if ($action === 'like' && !$is_liked) {
         $sql = "INSERT INTO `likes` (`user`, `post`) VALUES (?, ?)";
-    }
-    else if ($action === 'unlike' && $is_liked) {
-        $sql = "DELETE FROM `likes` s WHERE s.user = ? AND s.post = ?";
-    }
-    else {
-        $error = true;
+    } else {
+        if ($action === 'unlike' && $is_liked) {
+            $sql = "DELETE FROM `likes` s WHERE s.user = ? AND s.post = ?";
+        } else {
+            $error = true;
+        }
     }
 
     if (!$error) {

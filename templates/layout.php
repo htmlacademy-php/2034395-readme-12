@@ -129,17 +129,20 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
-                        <a class="header__page-link <?php if($target == 'popular'): ?>header__page-link--active<?php endif; ?>" title="Популярный контент" href="../popular.php?tab=all&page=1&sort=views">
+                        <a class="header__page-link <?php if ($target == 'popular'): ?>header__page-link--active<?php endif; ?>"
+                           title="Популярный контент" href="../popular.php?tab=all&page=1&sort=views">
                             <span class="visually-hidden">Популярный контент</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--feed">
-                        <a class="header__page-link <?php if($target == 'feed'): ?>header__page-link--active<?php endif; ?>" href="#" title="Моя лента">
+                        <a class="header__page-link <?php if ($target == 'feed'): ?>header__page-link--active<?php endif; ?>"
+                           href="#" title="Моя лента">
                             <span class="visually-hidden">Моя лента</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--messages">
-                        <a class="header__page-link <?php if($target == 'messages'): ?>header__page-link--active<?php endif; ?>" href="#" title="Личные сообщения">
+                        <a class="header__page-link <?php if ($target == 'messages'): ?>header__page-link--active<?php endif; ?>"
+                           href="#" title="Личные сообщения">
                             <span class="visually-hidden">Личные сообщения</span>
                         </a>
                     </li>
@@ -165,7 +168,8 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                                 <div class="header__profile-tooltip">
                                     <ul class="header__profile-nav">
                                         <li class="header__profile-nav-item">
-                                            <a class="header__profile-nav-link" href="profile.php?id=<?= $user['id']?>">
+                                            <a class="header__profile-nav-link"
+                                               href="profile.php?id=<?= $user['id'] ?>">
                                               <span class="header__profile-nav-text">
                                                 Мой профиль
                                               </span>
@@ -197,10 +201,12 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                         </li>
                     <?php else: ?>
                         <li class="header__authorization">
-                            <a class="header__user-button header__authorization-button button" href="../index.php">Вход</a>
+                            <a class="header__user-button header__authorization-button button"
+                               href="../index.php">Вход</a>
                         </li>
                         <li>
-                            <a class="header__user-button header__user-button--active header__register-button button" href="../reg.php">
+                            <a class="header__user-button header__user-button--active header__register-button button"
+                               href="../reg.php">
                                 Регистрация
                             </a>
                         </li>

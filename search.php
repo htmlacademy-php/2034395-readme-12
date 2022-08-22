@@ -3,7 +3,8 @@ require_once 'requires_guest.php';
 
 $search_data = $_GET['search'] ?? null;
 
-function postsSearchFilter($link, $filter): array {
+function postsSearchFilter($link, $filter): array
+{
     $sql = "SELECT p.*, u.avatar_url, u.login FROM `posts` p" .
         " JOIN `users` u ON p.author = u.id" .
         " WHERE MATCH(`title`, `content`) AGAINST(?)";
@@ -25,7 +26,9 @@ $content = include_template('search-result.php', [
     "link" => $link,
 ]);
 
-if (count($posts) === 0) $content = include_template('no-results.php', ["search_data" => $search_data]);
+if (count($posts) === 0) {
+    $content = include_template('no-results.php', ["search_data" => $search_data]);
+}
 
 $layout = include_template('layout.php', [
     "content" => $content,

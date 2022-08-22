@@ -5,7 +5,8 @@
             <div class="profile__user user container">
                 <div class="profile__user-info user__info">
                     <div class="profile__avatar user__avatar">
-                        <img class="profile__picture user__picture" src="../img/userpic-medium.jpg" alt="Аватар пользователя">
+                        <img class="profile__picture user__picture" src="../img/userpic-medium.jpg"
+                             alt="Аватар пользователя">
                     </div>
                     <div class="profile__name-wrapper user__name-wrapper">
                         <span class="profile__name user__name"><?= htmlspecialchars($profile['login']) ?></span>
@@ -23,7 +24,9 @@
                     </p>
                     <p class="profile__rating-item user__rating-item user__rating-item--subscribers">
                         <span class="user__rating-amount"><?= count(getSubs($link, $profile['id'])) ?></span>
-                        <span class="profile__rating-text user__rating-text"><?= get_noun_plural_form(count(getSubs($link, $profile['id'])), 'подписчик', 'подписчика', 'подписчиков') ?></span>
+                        <span
+                            class="profile__rating-text user__rating-text"><?= get_noun_plural_form(count(getSubs($link,
+                                $profile['id'])), 'подписчик', 'подписчика', 'подписчиков') ?></span>
                     </p>
                 </div>
                 <?php if (!$is_owner): ?>
@@ -43,7 +46,8 @@
                                 Отписаться
                             </a>
                         <?php endif; ?>
-                        <a class="profile__user-button user__button user__button--writing button button--green" href="#">Сообщение</a>
+                        <a class="profile__user-button user__button user__button--writing button button--green"
+                           href="#">Сообщение</a>
                     </div>
                 <?php endif; ?>
             </div>
@@ -67,14 +71,16 @@
                 <div class="profile__tab-content">
                     <section class="profile__posts tabs__content tabs__content--active">
                         <h2 class="visually-hidden">Публикации</h2>
-                        <?php foreach($posts as $post): ?>
-                        <?php $is_liked = isPostLiked($link, $user['id'], $post['id']); ?>
+                        <?php foreach ($posts as $post): ?>
+                            <?php $is_liked = isPostLiked($link, $user['id'], $post['id']); ?>
                             <article class="profile__post post <?= $post['class_name'] ?>">
                                 <header class="post__header">
-                                    <h2><a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a></h2>
+                                    <h2>
+                                        <a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                    </h2>
                                 </header>
                                 <div class="post__main">
-                                    <?php if($post['name'] == 'quote'): ?>
+                                    <?php if ($post['name'] == 'quote'): ?>
                                         <blockquote>
                                             <p>
                                                 <?= htmlspecialchars($post['content']) ?>
@@ -83,26 +89,31 @@
                                         </blockquote>
                                     <?php endif; ?>
 
-                                    <?php if($post['name'] == 'text'): ?>
+                                    <?php if ($post['name'] == 'text'): ?>
                                         <?php $postTextData = showData($post['content']) ?>
                                         <p><?= htmlspecialchars($postTextData['text']) ?></p>
-                                        <?php if($postTextData['isLong']): ?>
-                                            <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать далее</a>
+                                        <?php if ($postTextData['isLong']): ?>
+                                            <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать
+                                                далее</a>
                                         <?php endif; ?>
                                     <?php endif; ?>
 
-                                    <?php if($post['name'] == 'photo'): ?>
+                                    <?php if ($post['name'] == 'photo'): ?>
                                         <div class="post-photo__image-wrapper">
-                                            <img src="<?= $post['image_url'] ?>" alt="Фото от пользователя" width="360" height="240">
+                                            <img src="<?= $post['image_url'] ?>" alt="Фото от пользователя" width="360"
+                                                 height="240">
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if($post['name'] == 'link'): ?>
+                                    <?php if ($post['name'] == 'link'): ?>
                                         <div class="post-link__wrapper">
-                                            <a class="post-link__external" target="_blank" href="<?= $post['site_url'] ?>" title="Перейти по ссылке">
+                                            <a class="post-link__external" target="_blank"
+                                               href="<?= $post['site_url'] ?>" title="Перейти по ссылке">
                                                 <div class="post-link__info-wrapper">
                                                     <div class="post-link__icon-wrapper">
-                                                        <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
+                                                        <img
+                                                            src="https://www.google.com/s2/favicons?domain=vitadental.ru"
+                                                            alt="Иконка">
                                                     </div>
                                                     <div class="post-link__info">
                                                         <h3><?= htmlspecialchars($post['title']) ?></h3>
@@ -113,12 +124,13 @@
                                         </div>
                                     <?php endif; ?>
 
-                                    <?php if($post['name'] == 'video'): ?>
+                                    <?php if ($post['name'] == 'video'): ?>
                                         <div class="post-video__block">
                                             <div class="post-video__preview">
                                                 <?= embed_youtube_cover($post['video_url']); ?>
                                             </div>
-                                            <a href="../post.php?id=<?= $post['id'] ?>" class="post-video__play-big button">
+                                            <a href="../post.php?id=<?= $post['id'] ?>"
+                                               class="post-video__play-big button">
                                                 <svg class="post-video__play-big-icon" width="14" height="14">
                                                     <use xlink:href="#icon-video-play-big"></use>
                                                 </svg>
@@ -131,34 +143,36 @@
                                     <div class="post__indicators">
                                         <div class="post__buttons">
                                             <?php if (!$is_liked): ?>
-                                                <a
-                                                    class="post__indicator post__indicator--likes button"
-                                                    href="like.php?action=like&address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
-                                                    title="Поставить лайк"
-                                                >
-                                            <?php else: ?>
+                                            <a
+                                                class="post__indicator post__indicator--likes button"
+                                                href="like.php?action=like&address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
+                                                title="Поставить лайк"
+                                            >
+                                                <?php else: ?>
                                                 <a
                                                     class="post__indicator post__indicator--likes-active button"
                                                     href="like.php?action=unlike&address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
                                                     title="Убрать лайк"
                                                 >
-                                            <?php endif; ?>
-                                                <svg class="post__indicator-icon" width="20" height="17">
-                                                    <use xlink:href="#icon-heart"></use>
-                                                </svg>
-                                                <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                                                    <use xlink:href="#icon-heart-active"></use>
-                                                </svg>
-                                                <span><?= count(getPostLikes($link, $post['id'])) ?></span>
-                                                <span class="visually-hidden">количество лайков</span>
-                                            </a>
-                                            <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
-                                                <svg class="post__indicator-icon" width="19" height="17">
-                                                    <use xlink:href="#icon-repost"></use>
-                                                </svg>
-                                                <span>5</span>
-                                                <span class="visually-hidden">количество репостов</span>
-                                            </a>
+                                                    <?php endif; ?>
+                                                    <svg class="post__indicator-icon" width="20" height="17">
+                                                        <use xlink:href="#icon-heart"></use>
+                                                    </svg>
+                                                    <svg class="post__indicator-icon post__indicator-icon--like-active"
+                                                         width="20" height="17">
+                                                        <use xlink:href="#icon-heart-active"></use>
+                                                    </svg>
+                                                    <span><?= count(getPostLikes($link, $post['id'])) ?></span>
+                                                    <span class="visually-hidden">количество лайков</span>
+                                                </a>
+                                                <a class="post__indicator post__indicator--repost button" href="#"
+                                                   title="Репост">
+                                                    <svg class="post__indicator-icon" width="19" height="17">
+                                                        <use xlink:href="#icon-repost"></use>
+                                                    </svg>
+                                                    <span>5</span>
+                                                    <span class="visually-hidden">количество репостов</span>
+                                                </a>
                                         </div>
                                         <time class="post__time" datetime="<?= $post['date'] ?>">
                                             <?= normalizeDate($post['date']) . " назад" ?>
@@ -174,7 +188,8 @@
                                     </ul>
                                 </footer>
                                 <div class="comments">
-                                    <a class="comments__button button" href="post.php?id=<?= $post['id'] ?>">Показать комментарии</a>
+                                    <a class="comments__button button" href="post.php?id=<?= $post['id'] ?>">Показать
+                                        комментарии</a>
                                 </div>
                             </article>
                         <?php endforeach; ?>
@@ -187,7 +202,8 @@
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
@@ -195,15 +211,19 @@
                                             <span>Петр Демин</span>
                                         </a>
                                         <div class="post-mini__action">
-                                            <span class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
-                                            <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 минут назад</time>
+                                            <span
+                                                class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
+                                            <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5
+                                                минут назад
+                                            </time>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="post-mini__preview">
                                     <a class="post-mini__link" href="#" title="Перейти на публикацию">
                                         <div class="post-mini__image-wrapper">
-                                            <img class="post-mini__image" src="../img/rock-small.png" width="109" height="109" alt="Превью публикации">
+                                            <img class="post-mini__image" src="../img/rock-small.png" width="109"
+                                                 height="109" alt="Превью публикации">
                                         </div>
                                         <span class="visually-hidden">Фото</span>
                                     </a>
@@ -213,7 +233,8 @@
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
@@ -221,8 +242,11 @@
                                             <span>Петр Демин</span>
                                         </a>
                                         <div class="post-mini__action">
-                                            <span class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
-                                            <time class="post-mini__time user__additional" datetime="2014-03-20T20:05">15 минут назад</time>
+                                            <span
+                                                class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
+                                            <time class="post-mini__time user__additional" datetime="2014-03-20T20:05">
+                                                15 минут назад
+                                            </time>
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +263,8 @@
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
@@ -247,15 +272,19 @@
                                             <span>Петр Демин</span>
                                         </a>
                                         <div class="post-mini__action">
-                                            <span class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
-                                            <time class="post-mini__time user__additional" datetime="2014-03-20T18:20">2 часа назад</time>
+                                            <span
+                                                class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
+                                            <time class="post-mini__time user__additional" datetime="2014-03-20T18:20">2
+                                                часа назад
+                                            </time>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="post-mini__preview">
                                     <a class="post-mini__link" href="#" title="Перейти на публикацию">
                                         <div class="post-mini__image-wrapper">
-                                            <img class="post-mini__image" src="../img/coast-small.png" width="109" height="109" alt="Превью публикации">
+                                            <img class="post-mini__image" src="../img/coast-small.png" width="109"
+                                                 height="109" alt="Превью публикации">
                                             <span class="post-mini__play-big">
                             <svg class="post-mini__play-big-icon" width="12" height="13">
                               <use xlink:href="#icon-video-play-big"></use>
@@ -270,7 +299,8 @@
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
@@ -278,8 +308,11 @@
                                             <span>Петр Демин</span>
                                         </a>
                                         <div class="post-mini__action">
-                                            <span class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
-                                            <time class="post-mini__time user__additional" datetime="2014-03-15T20:05">5 дней назад</time>
+                                            <span
+                                                class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
+                                            <time class="post-mini__time user__additional" datetime="2014-03-15T20:05">5
+                                                дней назад
+                                            </time>
                                         </div>
                                     </div>
                                 </div>
@@ -296,7 +329,8 @@
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
@@ -304,8 +338,11 @@
                                             <span>Петр Демин</span>
                                         </a>
                                         <div class="post-mini__action">
-                                            <span class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
-                                            <time class="post-mini__time user__additional" datetime="2014-03-20T20:05">в далеком 2007-ом</time>
+                                            <span
+                                                class="post-mini__activity user__additional">Лайкнул вашу публикацию</span>
+                                            <time class="post-mini__time user__additional" datetime="2014-03-20T20:05">в
+                                                далеком 2007-ом
+                                            </time>
                                         </div>
                                     </div>
                                 </div>
@@ -328,14 +365,17 @@
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
                                         <a class="post-mini__name user__name" href="#">
                                             <span>Петр Демин</span>
                                         </a>
-                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет на сайте</time>
+                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет
+                                            на сайте
+                                        </time>
                                     </div>
                                 </div>
                                 <div class="post-mini__rating user__rating">
@@ -349,21 +389,27 @@
                                     </p>
                                 </div>
                                 <div class="post-mini__user-buttons user__buttons">
-                                    <button class="post-mini__user-button user__button user__button--subscription button button--main" type="button">Подписаться</button>
+                                    <button
+                                        class="post-mini__user-button user__button user__button--subscription button button--main"
+                                        type="button">Подписаться
+                                    </button>
                                 </div>
                             </li>
                             <li class="post-mini post-mini--photo post user">
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
                                         <a class="post-mini__name user__name" href="#">
                                             <span>Петр Демин</span>
                                         </a>
-                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет на сайте</time>
+                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет
+                                            на сайте
+                                        </time>
                                     </div>
                                 </div>
                                 <div class="post-mini__rating user__rating">
@@ -377,21 +423,27 @@
                                     </p>
                                 </div>
                                 <div class="post-mini__user-buttons user__buttons">
-                                    <button class="post-mini__user-button user__button user__button--subscription button button--quartz" type="button">Отписаться</button>
+                                    <button
+                                        class="post-mini__user-button user__button user__button--subscription button button--quartz"
+                                        type="button">Отписаться
+                                    </button>
                                 </div>
                             </li>
                             <li class="post-mini post-mini--photo post user">
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
                                         <a class="post-mini__name user__name" href="#">
                                             <span>Петр Демин</span>
                                         </a>
-                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет на сайте</time>
+                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет
+                                            на сайте
+                                        </time>
                                     </div>
                                 </div>
                                 <div class="post-mini__rating user__rating">
@@ -405,21 +457,27 @@
                                     </p>
                                 </div>
                                 <div class="post-mini__user-buttons user__buttons">
-                                    <button class="post-mini__user-button user__button user__button--subscription button button--main" type="button">Подписаться</button>
+                                    <button
+                                        class="post-mini__user-button user__button user__button--subscription button button--main"
+                                        type="button">Подписаться
+                                    </button>
                                 </div>
                             </li>
                             <li class="post-mini post-mini--photo post user">
                                 <div class="post-mini__user-info user__info">
                                     <div class="post-mini__avatar user__avatar">
                                         <a class="user__avatar-link" href="#">
-                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg" alt="Аватар пользователя">
+                                            <img class="post-mini__picture user__picture" src="../img/userpic-petro.jpg"
+                                                 alt="Аватар пользователя">
                                         </a>
                                     </div>
                                     <div class="post-mini__name-wrapper user__name-wrapper">
                                         <a class="post-mini__name user__name" href="#">
                                             <span>Петр Демин</span>
                                         </a>
-                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет на сайте</time>
+                                        <time class="post-mini__time user__additional" datetime="2014-03-20T20:20">5 лет
+                                            на сайте
+                                        </time>
                                     </div>
                                 </div>
                                 <div class="post-mini__rating user__rating">
@@ -433,7 +491,10 @@
                                     </p>
                                 </div>
                                 <div class="post-mini__user-buttons user__buttons">
-                                    <button class="post-mini__user-button user__button user__button--subscription button button--main" type="button">Подписаться</button>
+                                    <button
+                                        class="post-mini__user-button user__button user__button--subscription button button--main"
+                                        type="button">Подписаться
+                                    </button>
                                 </div>
                             </li>
                         </ul>

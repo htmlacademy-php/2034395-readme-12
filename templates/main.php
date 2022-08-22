@@ -148,7 +148,8 @@
             <h2 class="visually-hidden">Авторизация</h2>
             <form class="authorization__form form" action="../index.php" method="post">
                 <div class="authorization__input-wrapper form__input-wrapper">
-                    <input class="authorization__input authorization__input--login form__input" type="email" name="email"
+                    <input class="authorization__input authorization__input--login form__input" type="email"
+                           name="email"
                            placeholder="Электронная почта">
                     <svg class="form__input-icon" width="19" height="18">
                         <use xlink:href="#icon-input-user"></use>
