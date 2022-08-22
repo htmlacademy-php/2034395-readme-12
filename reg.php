@@ -6,22 +6,11 @@ $data = $_POST;
 $reg_data = ['errors' => []];
 
 function validateEmail($email, $link): array|bool {
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
+    $sql = "SELECT * FROM `users` u WHERE u.email = ?";
 
-    $sql = "SELECT * FROM `users` u WHERE u.email = '$email'";
+    $result = db_query_prepare_stmt($link, $sql, [$email], QUERY_ASSOC);
 
-    $result = mysqli_query($link, $sql);
-
-    if ($result === false) {
-        print_r("Ошибка выполнения запроса: " . mysqli_error($link));
-        die();
-    }
-
-    $isEmailUsed = count(mysqli_fetch_all($result, MYSQLI_ASSOC)) > 0;
+    $isEmailUsed = count($result) > 0;
 
     if ($isEmailUsed) return ['target' => 'email', 'text' => 'Указанный адрес электронной почты уже зарегистрирован.'];
 
@@ -58,16 +47,9 @@ function validateData($data, $link) {
 }
 
 function registerUser($link, $data) {
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
-    $sql = "INSERT INTO `users` (`email`, `login`, `password`) VALUES (?, ?, ?)";
-    $stmt = db_get_prepare_stmt($link, $sql, $data['data']);
+    $sql = "INSERT INTO `users` (`email`, `login`, `password`, `registration_date`) VALUES (?, ?, ?, NOW())";
 
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+    return db_query_prepare_stmt($link, $sql, $data['data'], QUERY_EXECUTE);
 }
 
 if (count($data) > 0) {

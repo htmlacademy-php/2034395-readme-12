@@ -7,22 +7,10 @@ $post_type = $_GET['type'] ?? 'photo';
 $post_data = ['errors' => []];
 
 function getCategoryId($link, $type) {
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
+    $sql = "SELECT ct.id FROM content_types ct WHERE `name` = ?";
 
-    $sql = "SELECT ct.id FROM content_types ct WHERE `name` = '$type'";
-
-    $result = mysqli_query($link, $sql);
-
-    if ($result === false) {
-        print_r("Ошибка выполнения запроса: " . mysqli_error($link));
-        die();
-    }
-
-    return mysqli_fetch_all($result, MYSQLI_ASSOC)[0]['id'];
+    $result = db_query_prepare_stmt($link, $sql, [$type]);
+    return $result['id'];
 }
 
 function validateUrl($url, $type): array|bool {
@@ -85,19 +73,10 @@ function validateData($data, $link, $type, $user): array {
 }
 
 function addPost($link, $post) {
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
-
     $sql = "INSERT INTO `posts` (`date`, `title`, `content`, `cite_author`, `content_type`, `author`, `image_url`, `video_url`, `site_url`, `views`)" .
         " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
-    $stmt = db_get_prepare_stmt($link, $sql, $post['data']);
-
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
+    return db_query_prepare_stmt($link, $sql, $post['data'], QUERY_EXECUTE);
 }
 
 if (count($data) > 0) {
@@ -105,7 +84,7 @@ if (count($data) > 0) {
 
     if (count($post_data['errors']) == 0) {
         addPost($link, $post_data);
-        header("Location: /popular.php");
+        header("Location: /popular.php?tab=all&page=1&sort=views");
         exit();
     }
 }

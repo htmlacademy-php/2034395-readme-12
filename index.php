@@ -7,27 +7,16 @@ function authUser($data, $link): bool {
     $email = $data['email'] ?? null;
     $password = $data['password'] ?? null;
 
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
-
     $sql = "SELECT * FROM `users` u WHERE u.email = ?";
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$email]);
+    $user = db_query_prepare_stmt($link, $sql, [$email], QUERY_ASSOC);
 
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-
-    $user = mysqli_fetch_assoc($result);
-
-    if (!password_verify($password, $user['password'])) return false;
+    if (!password_verify($password, $user[0]['password'])) return false;
 
     $now = time();
     $expires = strtotime('+1 month', $now);
 
-    setUserDataCookies($email, $user['password'], $expires);
+    setUserDataCookies($email, $user[0]['password'], $expires);
 
     return true;
 }
@@ -36,7 +25,7 @@ if (isset($data['email'])) {
     $is_auth = authUser($data, $link);
 
     if ($is_auth) {
-        header("Location: /popular.php");
+        header("Location: /popular.php?tab=all&page=1&sort=views");
         exit();
     }
 }

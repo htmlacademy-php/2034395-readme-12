@@ -9,7 +9,8 @@ CREATE TABLE `users` (
                        `email` VARCHAR(320) UNIQUE,
                        `login` VARCHAR(128) UNIQUE,
                        `password` CHAR(64),
-                       `avatar_url` VARCHAR(2048)
+                       `avatar_url` VARCHAR(2048),
+                       `registration_date` TIMESTAMP
 );
 
 CREATE TABLE `hashtags` (

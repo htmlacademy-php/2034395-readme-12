@@ -78,6 +78,39 @@ function db_get_prepare_stmt($link, $sql, $data = [])
     return $stmt;
 }
 
+const QUERY_DEFAULT = 'default';
+const QUERY_ASSOC = 'assoc';
+const QUERY_EXECUTE = 'execute';
+
+function db_query_prepare_stmt($link, $sql, $data = [], $type = QUERY_DEFAULT): array|null {
+    $answer = null;
+    $stmt = null;
+
+    if (!$link) {
+        $error = mysqli_connect_error();
+        print($error);
+        die();
+    }
+
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+
+    mysqli_stmt_execute($stmt);
+
+    if ($type !== QUERY_EXECUTE) {
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($type === QUERY_ASSOC) {
+            $answer = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+        else {
+            $answer = mysqli_fetch_assoc($result);
+        }
+    }
+
+    mysqli_stmt_close($stmt);
+    return $answer;
+}
+
 /**
  * Возвращает корректную форму множественного числа
  * Ограничения: только для целых чисел
@@ -138,7 +171,9 @@ function include_template(string $name, array $data = []): string
 }
 
 function validateFile($file, $path): array|bool {
-    if (!$file['name']) return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
+    if (!$file['name']) {
+        return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
+    }
 
     $mime = $file['type'];
     $name = $file['name'];
@@ -272,40 +307,7 @@ function generate_random_date($index)
     return $dt;
 }
 
-function normalizeDate($date): string {
-    $postUnix = strtotime($date);
-    $interval = floor((time() - $postUnix) / 60);
-    $type = "";
-    $types = [
-        "minutes" => ["минуту", "минуты", "минут"],
-        "hours" => ["час", "часа", "часов"],
-        "days" => ["день", "дня", "дней"],
-        "weeks" => ["неделю", "недели", "недель"],
-        "months" => ["месяц", "месяца", "месяцев"],
-    ];
-
-    if ($interval < 60) {
-        $type = "minutes";
-    } else if ($interval / 60 < 24) {
-        $type = "hours";
-        $interval = floor($interval / 60);
-    } else if ($interval / 60 / 24 < 7) {
-        $type = "days";
-        $interval = floor($interval / 60 / 24);
-    } else if ($interval / 60 / 24 / 7 < 5) {
-        $type = "weeks";
-        $interval = floor($interval / 60 / 24 / 7);
-    } else {
-        $type = "months";
-        $interval = floor($interval / 60 / 24 / 7 / 5);
-    }
-
-    $correctWord = get_noun_plural_form($interval, $types[$type][0], $types[$type][1], $types[$type][2]);
-
-    return "$interval $correctWord назад";
-}
-
-function getContentClassById($link, $id): string {
+function getContentClassById($link, $id): string|null {
     $sql = "SELECT * FROM `content_types`" .
         " WHERE `id` = '$id'";
 
@@ -318,7 +320,7 @@ function getContentClassById($link, $id): string {
 
     $result_arr = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    return $result_arr[0]["class_name"];
+    return $result_arr[0]["class_name"] ?? null;
 }
 
 function showData($text, $maxSymbols = 300): array
@@ -335,13 +337,119 @@ function showData($text, $maxSymbols = 300): array
         $symbols = $symbols + strlen($word);
 
         if ($symbols < $maxSymbols) {
-            $result['text'] = $result['text'] . ' ' . $word;
+            $result['text'] .= ' ' . $word;
         } else {
-            $result['text'] = $result['text'] . '...';
+            $result['text'] .= '...';
             $result['isLong'] = 1;
             break;
         }
     }
 
     return $result;
+}
+
+function normalizeDate($date): string {
+    $postUnix = strtotime($date);
+    $interval = floor((time() - $postUnix) / 60);
+    $type = "";
+    $types = [
+        "minutes" => ["минуту", "минуты", "минут"],
+        "hours" => ["час", "часа", "часов"],
+        "days" => ["день", "дня", "дней"],
+        "weeks" => ["неделю", "недели", "недель"],
+        "months" => ["месяц", "месяца", "месяцев"],
+        "years" => ["год", "года", "лет"]
+    ];
+
+    if ($interval < 60) {
+        $type = "minutes";
+    } else if ($interval / 60 < 24) {
+        $type = "hours";
+        $interval = floor($interval / 60);
+    } else if ($interval / 60 / 24 < 7) {
+        $type = "days";
+        $interval = floor($interval / 60 / 24);
+    } else if ($interval / 60 / 24 / 7 < 5) {
+        $type = "weeks";
+        $interval = floor($interval / 60 / 24 / 7);
+    } else if ($interval / 60 / 24 / 7 / 5 < 12) {
+        $type = "months";
+        $interval = floor($interval / 60 / 24 / 7 / 5);
+    } else {
+        $type = "years";
+        $interval = floor($interval / 60 / 24 / 7 / 5 / 12);
+    }
+
+    $correctWord = get_noun_plural_form($interval, $types[$type][0], $types[$type][1], $types[$type][2]);
+
+    return "$interval $correctWord";
+}
+
+function getUserData($link, $type, $var): array {
+    $sql = null;
+
+    if ($type === 'email') {
+        $sql = "SELECT * FROM `users` u WHERE u.email = ?";
+    }
+    else {
+        $sql = "SELECT * FROM `users` u WHERE u.id = ?";
+    }
+
+    return db_query_prepare_stmt($link, $sql, [$var]);
+}
+
+function getSubs($link, $id): array {
+    $sql = "SELECT * FROM `subscriptions` s WHERE s.user = ?";
+
+    $result = db_query_prepare_stmt($link, $sql, [$id], QUERY_ASSOC);
+
+    return $result ?? [];
+}
+
+function checkIsUserSubscribed($link, $user, $author) {
+    $sql = "SELECT * FROM `subscriptions` s WHERE s.subscriber = ? AND s.user = ?";
+
+    return db_query_prepare_stmt($link, $sql, [$user, $author]);
+}
+
+function getPostLikes($link, $post) {
+    $sql = "SELECT * FROM `likes` l WHERE l.post = ?";
+
+    return db_query_prepare_stmt($link, $sql, [$post], QUERY_ASSOC);
+}
+
+function isPostLiked($link, $user, $post) {
+    $sql = "SELECT l.id FROM `likes` l WHERE l.post = ? AND l.user = ?";
+
+    return db_query_prepare_stmt($link, $sql, [$post, $user]);
+}
+
+function getComments($link, $id): array {
+    $sql = " SELECT * FROM `comments` c" .
+        " JOIN `users` u ON c.author = u.id" .
+        " WHERE c.post = ?";
+
+    return db_query_prepare_stmt($link, $sql, [$id], QUERY_ASSOC);
+}
+
+function getPostById($link, $id) {
+    $sql = " SELECT p.*, ct.name, ct.class_name FROM `posts` p" .
+        " JOIN `content_types` ct ON p.content_type = ct.id" .
+        " WHERE p.id = ?";
+
+    $post = db_query_prepare_stmt($link, $sql, [$id]);
+
+    if (isset($post['id'])) {
+        return $post;
+    }
+    else {
+        http_response_code(404);
+        die();
+    }
+}
+
+function addComment($link, $text, $post, $author) {
+    $sql = "INSERT INTO `comments` (`date`, `content`, `author`, `post`) VALUES(NOW(), ?, ?, ?)";
+
+    return db_query_prepare_stmt($link, $sql, [$text, $author, $post], QUERY_EXECUTE);
 }

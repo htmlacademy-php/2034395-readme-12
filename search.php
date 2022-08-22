@@ -6,14 +6,13 @@ $search_data = $_GET['search'] ?? null;
 function postsSearchFilter($link, $filter): array {
     $sql = "SELECT p.*, u.avatar_url, u.login FROM `posts` p" .
         " JOIN `users` u ON p.author = u.id" .
-        " WHERE MATCH(`title`, `content`) AGAINST('$filter')";
+        " WHERE MATCH(`title`, `content`) AGAINST(?)";
 
-    $result = mysqli_query($link, $sql);
+    $stmt = db_get_prepare_stmt($link, $sql, [$filter]);
 
-    if ($result === false) {
-        print_r("Ошибка выполнения запроса: " . mysqli_error($link));
-        die();
-    }
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
 
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
