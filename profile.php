@@ -2,6 +2,7 @@
 require_once 'requires_guest.php';
 
 $user_id = $_GET["id"] ?? null;
+$action = $_GET['act'] ?? null;
 
 $profile_data = null;
 $posts_data = null;
@@ -16,6 +17,10 @@ if (isset($user_id)) {
     $posts_data = db_query_prepare_stmt($link, $sql, [$user_id], QUERY_ASSOC);
 
     $profile_data = getUserData($link, 'id', $user_id);
+
+    if ($action === 'sub') {
+        sendEmailNotify($user, $profile_data, EMAIL_SUB_TYPE);
+    }
 
     if ($user_id == $user['id']) {
         $is_owner = true;

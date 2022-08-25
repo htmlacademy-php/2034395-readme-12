@@ -2,6 +2,7 @@
 
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mime\Email;
 
 /**
@@ -376,34 +377,26 @@ function normalizeDate($date): string
 
     if ($interval < 60) {
         $type = "minutes";
+    } else if ($interval / 60 < 24) {
+        $type = "hours";
+        $interval = floor($interval / 60);
+    } else if ($interval / 60 / 24 < 7) {
+        $type = "days";
+        $interval = floor($interval / 60 / 24);
+    } else if ($interval / 60 / 24 / 7 < 5) {
+        $type = "weeks";
+        $interval = floor($interval / 60 / 24 / 7);
+    } else if ($interval / 60 / 24 / 7 / 5 < 12) {
+        $type = "months";
+        $interval = floor($interval / 60 / 24 / 7 / 5);
     } else {
-        if ($interval / 60 < 24) {
-            $type = "hours";
-            $interval = floor($interval / 60);
-        } else {
-            if ($interval / 60 / 24 < 7) {
-                $type = "days";
-                $interval = floor($interval / 60 / 24);
-            } else {
-                if ($interval / 60 / 24 / 7 < 5) {
-                    $type = "weeks";
-                    $interval = floor($interval / 60 / 24 / 7);
-                } else {
-                    if ($interval / 60 / 24 / 7 / 5 < 12) {
-                        $type = "months";
-                        $interval = floor($interval / 60 / 24 / 7 / 5);
-                    } else {
-                        $type = "years";
-                        $interval = floor($interval / 60 / 24 / 7 / 5 / 12);
-                    }
-                }
-            }
-        }
+        $type = "years";
+        $interval = floor($interval / 60 / 24 / 7 / 5 / 12);
     }
 
-    $correctWord = get_noun_plural_form($interval, $types[$type][0], $types[$type][1], $types[$type][2]);
+$correctWord = get_noun_plural_form($interval, $types[$type][0], $types[$type][1], $types[$type][2]);
 
-    return "$interval $correctWord";
+return "$interval $correctWord";
 }
 
 function getUserData($link, $type, $var): array
@@ -494,8 +487,7 @@ const EMAIL_SUB_PRESET = [
 
 function sendEmailNotify($sender, $recipient, $type)
 {
-
-    $transport = Transport::fromDsn('smtp://parismay.frontend@mail.ru:RWjJ2UKBvhGz9jWka9b7@smtp.mail.ru:465');
+    $transport = Transport::fromDsn('smtp://parismay.frontend@mail.ru:psswd@smtp.mail.ru:465');
     $mailer = new Mailer($transport);
 
     $email = (new Email())
@@ -505,5 +497,9 @@ function sendEmailNotify($sender, $recipient, $type)
         ->text($sender['login'] . ' ' . $type == EMAIL_SUB_TYPE ? 'your new follower' : 'send a new message')
         ->html($type == EMAIL_SUB_TYPE ? EMAIL_SUB_PRESET['content'] : EMAIL_MESSAGE_PRESET['content']);
 
-    $mailer->send($email);
+    try {
+        $mailer->send($email);
+    } catch (TransportException $e) {
+        echo("<div class='error'>" . $e->getMessage() . "</div>");
+    }
 }

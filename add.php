@@ -46,23 +46,12 @@ function validateData($data, $link, $type, $user): array
     $tags = $data[$type . '-tags'] ?? null;
     $file = $_FILES['userpic-file-photo'] ?? null;
 
-    $url = null;
-
-    if ($type == 'photo') {
-        if ($file) {
-            $url = $files_path . $file['name'];
-        } else {
-            $url = $image_url;
-        }
-    } else {
-        if ($type == 'video') {
-            $url = $video_url;
-        } else {
-            if ($type == 'link') {
-                $url = $site_url;
-            }
-        }
-    }
+    $url = match ($type) {
+        'photo' => $file ? $files_path . $file['name'] : $image_url,
+        'video' => $video_url,
+        'link' => $site_url,
+        default => ''
+    };
 
     if (strlen($title) == 0) {
         $errors[] = ['target' => 'title', 'text' => 'Укажите заголовок.'];
