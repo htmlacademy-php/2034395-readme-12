@@ -1,4 +1,10 @@
 <?php
+
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Exception\TransportException;
+use Symfony\Component\Mime\Email;
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -82,7 +88,8 @@ const QUERY_DEFAULT = 'default';
 const QUERY_ASSOC = 'assoc';
 const QUERY_EXECUTE = 'execute';
 
-function db_query_prepare_stmt($link, $sql, $data = [], $type = QUERY_DEFAULT): array|null {
+function db_query_prepare_stmt($link, $sql, $data = [], $type = QUERY_DEFAULT): array|null
+{
     $answer = null;
     $stmt = null;
 
@@ -101,8 +108,7 @@ function db_query_prepare_stmt($link, $sql, $data = [], $type = QUERY_DEFAULT): 
 
         if ($type === QUERY_ASSOC) {
             $answer = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-        else {
+        } else {
             $answer = mysqli_fetch_assoc($result);
         }
     }
@@ -170,7 +176,8 @@ function include_template(string $name, array $data = []): string
     return ob_get_clean();
 }
 
-function validateFile($file, $path): array|bool {
+function validateFile($file, $path): array|bool
+{
     if (!$file['name']) {
         return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
     }
@@ -180,14 +187,18 @@ function validateFile($file, $path): array|bool {
     $tmp_name = $file['tmp_name'];
 
     if ($mime != 'image/gif' && $mime != 'image/jpeg' && $mime != 'image/png') {
-        return ['target' => 'file', 'text' => 'Вы можете загрузить файлы только в следующих форматах: .png, .jpeg, .gif.'];
+        return [
+            'target' => 'file',
+            'text' => 'Вы можете загрузить файлы только в следующих форматах: .png, .jpeg, .gif.'
+        ];
     }
 
     move_uploaded_file($tmp_name, $path . $name);
     return false;
 }
 
-function setUserDataCookies($email, $password, $expires): void {
+function setUserDataCookies($email, $password, $expires): void
+{
     setcookie('user_email', $email, $expires);
     setcookie('user_password', $password, $expires);
 }
@@ -202,7 +213,8 @@ function check_youtube_url($url)
 {
     $id = extract_youtube_id($url);
 
-    set_error_handler(function () {}, E_WARNING);
+    set_error_handler(function () {
+    }, E_WARNING);
     $headers = get_headers('https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $id);
     restore_error_handler();
 
@@ -307,7 +319,8 @@ function generate_random_date($index)
     return $dt;
 }
 
-function getContentClassById($link, $id): string|null {
+function getContentClassById($link, $id): string|null
+{
     $sql = "SELECT * FROM `content_types`" .
         " WHERE `id` = '$id'";
 
@@ -333,7 +346,7 @@ function showData($text, $maxSymbols = 300): array
 
     $symbols = 0;
 
-    foreach($array as $word) {
+    foreach ($array as $word) {
         $symbols = $symbols + strlen($word);
 
         if ($symbols < $maxSymbols) {
@@ -348,7 +361,8 @@ function showData($text, $maxSymbols = 300): array
     return $result;
 }
 
-function normalizeDate($date): string {
+function normalizeDate($date): string
+{
     $postUnix = strtotime($date);
     $interval = floor((time() - $postUnix) / 60);
     $type = "";
@@ -380,25 +394,26 @@ function normalizeDate($date): string {
         $interval = floor($interval / 60 / 24 / 7 / 5 / 12);
     }
 
-    $correctWord = get_noun_plural_form($interval, $types[$type][0], $types[$type][1], $types[$type][2]);
+$correctWord = get_noun_plural_form($interval, $types[$type][0], $types[$type][1], $types[$type][2]);
 
-    return "$interval $correctWord";
+return "$interval $correctWord";
 }
 
-function getUserData($link, $type, $var): array {
+function getUserData($link, $type, $var): array
+{
     $sql = null;
 
     if ($type === 'email') {
         $sql = "SELECT * FROM `users` u WHERE u.email = ?";
-    }
-    else {
+    } else {
         $sql = "SELECT * FROM `users` u WHERE u.id = ?";
     }
 
     return db_query_prepare_stmt($link, $sql, [$var]);
 }
 
-function getSubs($link, $id): array {
+function getSubs($link, $id): array
+{
     $sql = "SELECT * FROM `subscriptions` s WHERE s.user = ?";
 
     $result = db_query_prepare_stmt($link, $sql, [$id], QUERY_ASSOC);
@@ -406,25 +421,29 @@ function getSubs($link, $id): array {
     return $result ?? [];
 }
 
-function checkIsUserSubscribed($link, $user, $author) {
+function checkIsUserSubscribed($link, $user, $author)
+{
     $sql = "SELECT * FROM `subscriptions` s WHERE s.subscriber = ? AND s.user = ?";
 
     return db_query_prepare_stmt($link, $sql, [$user, $author]);
 }
 
-function getPostLikes($link, $post) {
+function getPostLikes($link, $post)
+{
     $sql = "SELECT * FROM `likes` l WHERE l.post = ?";
 
     return db_query_prepare_stmt($link, $sql, [$post], QUERY_ASSOC);
 }
 
-function isPostLiked($link, $user, $post) {
+function isPostLiked($link, $user, $post)
+{
     $sql = "SELECT l.id FROM `likes` l WHERE l.post = ? AND l.user = ?";
 
     return db_query_prepare_stmt($link, $sql, [$post, $user]);
 }
 
-function getComments($link, $id): array {
+function getComments($link, $id): array
+{
     $sql = " SELECT * FROM `comments` c" .
         " JOIN `users` u ON c.author = u.id" .
         " WHERE c.post = ?";
@@ -432,7 +451,8 @@ function getComments($link, $id): array {
     return db_query_prepare_stmt($link, $sql, [$id], QUERY_ASSOC);
 }
 
-function getPostById($link, $id) {
+function getPostById($link, $id)
+{
     $sql = " SELECT p.*, ct.name, ct.class_name FROM `posts` p" .
         " JOIN `content_types` ct ON p.content_type = ct.id" .
         " WHERE p.id = ?";
@@ -441,15 +461,45 @@ function getPostById($link, $id) {
 
     if (isset($post['id'])) {
         return $post;
-    }
-    else {
+    } else {
         http_response_code(404);
         die();
     }
 }
 
-function addComment($link, $text, $post, $author) {
+function addComment($link, $text, $post, $author)
+{
     $sql = "INSERT INTO `comments` (`date`, `content`, `author`, `post`) VALUES(NOW(), ?, ?, ?)";
 
     return db_query_prepare_stmt($link, $sql, [$text, $author, $post], QUERY_EXECUTE);
+}
+
+const EMAIL_MESSAGE_TYPE = 'message';
+const EMAIL_SUB_TYPE = 'subscription';
+const EMAIL_MESSAGE_PRESET = [
+    'subject' => 'message title text',
+    'content' => '<p>new message</p>'
+];
+const EMAIL_SUB_PRESET = [
+    'subject' => 'subscription title text',
+    'content' => '<p>new subscriber</p>'
+];
+
+function sendEmailNotify($sender, $recipient, $type)
+{
+    $transport = Transport::fromDsn('smtp://parismay.frontend@mail.ru:psswd@smtp.mail.ru:465');
+    $mailer = new Mailer($transport);
+
+    $email = (new Email())
+        ->from('parismay.frontend@mail.ru')
+        ->to($recipient['email'])
+        ->subject($type == EMAIL_SUB_TYPE ? EMAIL_SUB_PRESET['subject'] : EMAIL_MESSAGE_PRESET['subject'])
+        ->text($sender['login'] . ' ' . $type == EMAIL_SUB_TYPE ? 'your new follower' : 'send a new message')
+        ->html($type == EMAIL_SUB_TYPE ? EMAIL_SUB_PRESET['content'] : EMAIL_MESSAGE_PRESET['content']);
+
+    try {
+        $mailer->send($email);
+    } catch (TransportException $e) {
+        echo("<div class='error'>" . $e->getMessage() . "</div>");
+    }
 }

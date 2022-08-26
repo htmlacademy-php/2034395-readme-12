@@ -47,7 +47,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--ellipse
                                 filters__button--all
-                                <?php if($tab == 'all'):?>filters__button--active<?php endif;?>
+                                <?php if ($tab == 'all'): ?>filters__button--active<?php endif; ?>
                             "
                             href="?tab=all"
                         >
@@ -60,7 +60,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--photo
                                 button
-                                <?php if($tab == 'photo'):?>filters__button--active<?php endif;?>
+                                <?php if ($tab == 'photo'): ?>filters__button--active<?php endif; ?>
                             "
                             href="?tab=photo"
                         >
@@ -76,7 +76,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--video
                                 button
-                                <?php if($tab == 'video'):?>filters__button--active<?php endif;?>
+                                <?php if ($tab == 'video'): ?>filters__button--active<?php endif; ?>
                             "
                             href="?tab=video"
                         >
@@ -92,7 +92,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--text
                                 button
-                                <?php if($tab == 'text'):?>filters__button--active<?php endif;?>
+                                <?php if ($tab == 'text'): ?>filters__button--active<?php endif; ?>
                             "
                             href="?tab=text"
                         >
@@ -108,7 +108,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--quote
                                 button
-                                <?php if($tab == 'quote'):?>filters__button--active<?php endif;?>
+                                <?php if ($tab == 'quote'): ?>filters__button--active<?php endif; ?>
                             "
                             href="?tab=quote"
                         >
@@ -124,7 +124,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--link
                                 button
-                                <?php if($tab == 'link'):?>filters__button--active<?php endif;?>
+                                <?php if ($tab == 'link'): ?>filters__button--active<?php endif; ?>
                             "
                             href="?tab=link"
                         >
@@ -138,13 +138,13 @@ $profile = getUserData($link, 'id', $user['id']);
             </div>
         </div>
         <div class="popular__posts">
-            <?php foreach($data as $post): ?>
+            <?php foreach ($data as $post): ?>
                 <?php
-                    $normalized_date = normalizeDate($post['date']);
-                    $comments = getComments($link, $post['id']);
-                    $likes = getPostLikes($link, $post['id']);
+                $normalized_date = normalizeDate($post['date']);
+                $comments = getComments($link, $post['id']);
+                $likes = getPostLikes($link, $post['id']);
 
-                    $is_liked = isPostLiked($link, $user['id'], $post['id']);
+                $is_liked = isPostLiked($link, $user['id'], $post['id']);
                 ?>
                 <article class="popular__post post <?= $post['class_name'] ?>">
                     <header class="post__header">
@@ -155,7 +155,7 @@ $profile = getUserData($link, 'id', $user['id']);
                         </h2>
                     </header>
                     <div class="post__main">
-                        <?php if($post['name'] == 'quote'): ?>
+                        <?php if ($post['name'] == 'quote'): ?>
                             <blockquote>
                                 <p>
                                     <?= htmlspecialchars($post['content']) ?>
@@ -164,26 +164,29 @@ $profile = getUserData($link, 'id', $user['id']);
                             </blockquote>
                         <?php endif; ?>
 
-                        <?php if($post['name'] == 'text'): ?>
+                        <?php if ($post['name'] == 'text'): ?>
                             <?php $postTextData = showData($post['content']) ?>
                             <p><?= htmlspecialchars($postTextData['text']) ?></p>
-                            <?php if($postTextData['isLong']): ?>
+                            <?php if ($postTextData['isLong']): ?>
                                 <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать далее</a>
                             <?php endif; ?>
                         <?php endif; ?>
 
-                        <?php if($post['name'] == 'photo'): ?>
+                        <?php if ($post['name'] == 'photo'): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="<?= $post['image_url'] ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="<?= $post['image_url'] ?>" alt="Фото от пользователя" width="360"
+                                     height="240">
                             </div>
                         <?php endif; ?>
 
-                        <?php if($post['name'] == 'link'): ?>
+                        <?php if ($post['name'] == 'link'): ?>
                             <div class="post-link__wrapper">
-                                <a class="post-link__external" target="_blank" href="<?= $post['site_url'] ?>" title="Перейти по ссылке">
+                                <a class="post-link__external" target="_blank" href="<?= $post['site_url'] ?>"
+                                   title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
                                         <div class="post-link__icon-wrapper">
-                                            <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
+                                            <img src="https://www.google.com/s2/favicons?domain=vitadental.ru"
+                                                 alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
                                             <h3><?= htmlspecialchars($post['title']) ?></h3>
@@ -194,7 +197,7 @@ $profile = getUserData($link, 'id', $user['id']);
                             </div>
                         <?php endif; ?>
 
-                        <?php if($post['name'] == 'video'): ?>
+                        <?php if ($post['name'] == 'video'): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
                                     <?= embed_youtube_cover($post['video_url']); ?>
@@ -212,45 +215,50 @@ $profile = getUserData($link, 'id', $user['id']);
                         <div class="post__author">
                             <a class="post__author-link" href="profile.php?id=<?= $post['author'] ?>" title="Автор">
                                 <div class="post__avatar-wrapper">
-                                    <img class="post__author-avatar" src="../img/<?= $profile['avatar_url'] ?? 'userpic.jpg' ?>" alt="Аватар пользователя">
+                                    <img class="post__author-avatar"
+                                         src="../img/<?= $profile['avatar_url'] ?? 'userpic.jpg' ?>"
+                                         alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
                                     <b class="post__author-name"><?= htmlspecialchars($post['login']) ?></b>
-                                    <time class="post__time" datetime="<?= $post['date'] ?>" title="<?= $post['date'] ?>"><?= $normalized_date . " назад" ?></time>
+                                    <time class="post__time" datetime="<?= $post['date'] ?>"
+                                          title="<?= $post['date'] ?>"><?= $normalized_date . " назад" ?></time>
                                 </div>
                             </a>
                         </div>
                         <div class="post__indicators">
                             <div class="post__buttons">
                                 <?php if (!$is_liked): ?>
-                                    <a
-                                        class="post__indicator post__indicator--likes button"
-                                        href="like.php?action=like&address=popular&post_id=<?= $post['id'] ?>"
-                                        title="Поставить лайк"
-                                    >
-                                <?php else: ?>
+                                <a
+                                    class="post__indicator post__indicator--likes button"
+                                    href="like.php?action=like&address=popular&post_id=<?= $post['id'] ?>"
+                                    title="Поставить лайк"
+                                >
+                                    <?php else: ?>
                                     <a
                                         class="post__indicator post__indicator--likes-active button"
                                         href="like.php?action=unlike&address=popular&post_id=<?= $post['id'] ?>"
                                         title="Убрать лайк"
                                     >
-                                <?php endif; ?>
-                                    <svg class="post__indicator-icon" width="20" height="17">
-                                        <use xlink:href="#icon-heart"></use>
-                                    </svg>
-                                    <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                                        <use xlink:href="#icon-heart-active"></use>
-                                    </svg>
-                                    <span><?= count($likes) ?></span>
-                                    <span class="visually-hidden">количество лайков</span>
-                                </a>
-                                <a class="post__indicator post__indicator--comments button" href="post.php?id=<?= $post['id'] ?>" title="Комментарии">
-                                    <svg class="post__indicator-icon" width="19" height="17">
-                                        <use xlink:href="#icon-comment"></use>
-                                    </svg>
-                                    <span><?= count($comments) ?></span>
-                                    <span class="visually-hidden">количество комментариев</span>
-                                </a>
+                                        <?php endif; ?>
+                                        <svg class="post__indicator-icon" width="20" height="17">
+                                            <use xlink:href="#icon-heart"></use>
+                                        </svg>
+                                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20"
+                                             height="17">
+                                            <use xlink:href="#icon-heart-active"></use>
+                                        </svg>
+                                        <span><?= count($likes) ?></span>
+                                        <span class="visually-hidden">количество лайков</span>
+                                    </a>
+                                    <a class="post__indicator post__indicator--comments button"
+                                       href="post.php?id=<?= $post['id'] ?>" title="Комментарии">
+                                        <svg class="post__indicator-icon" width="19" height="17">
+                                            <use xlink:href="#icon-comment"></use>
+                                        </svg>
+                                        <span><?= count($comments) ?></span>
+                                        <span class="visually-hidden">количество комментариев</span>
+                                    </a>
                             </div>
                         </div>
                     </footer>

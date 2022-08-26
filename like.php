@@ -6,7 +6,7 @@ $address = $_GET["address"] ?? null;
 $profile_id = $_GET["profile_id"] ?? null;
 $post_id = $_GET["post_id"] ?? null;
 
-$error = false;
+$error = true;
 
 if (isset($address)) {
     $sql = null;
@@ -15,12 +15,10 @@ if (isset($address)) {
 
     if ($action === 'like' && !$is_liked) {
         $sql = "INSERT INTO `likes` (`user`, `post`) VALUES (?, ?)";
-    }
-    else if ($action === 'unlike' && $is_liked) {
+        $error = false;
+    } else if ($action === 'unlike' && $is_liked) {
         $sql = "DELETE FROM `likes` s WHERE s.user = ? AND s.post = ?";
-    }
-    else {
-        $error = true;
+        $error = false;
     }
 
     if (!$error) {
