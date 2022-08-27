@@ -409,7 +409,7 @@ function getUserData($link, $type, $var): array
         $sql = "SELECT * FROM `users` u WHERE u.id = ?";
     }
 
-    return db_query_prepare_stmt($link, $sql, [$var]);
+    return db_query_prepare_stmt($link, $sql, [$var]) ?? [];
 }
 
 function getSubs($link, $id): array
@@ -465,6 +465,32 @@ function getPostById($link, $id)
         http_response_code(404);
         die();
     }
+}
+
+function checkIsUserViewPost($link, $user_id, $post_id): array {
+    $sql = "SELECT COUNT(*) > 0 FROM `views` v" .
+        " WHERE v.post_id = ? AND v.user_id = ?";
+
+    return db_query_prepare_stmt($link, $sql, [$post_id, $user_id]);
+}
+
+function addPostView($link, $user_id, $post_id) {
+    $isUserViewPost = join(' ', checkIsUserViewPost($link, $user_id, $post_id));
+
+    if ($isUserViewPost) {
+        return false;
+    }
+
+    $sql = "INSERT INTO `views` (`post_id`, `user_id`) VALUES (?, ?)";
+
+    return db_query_prepare_stmt($link, $sql, [$post_id, $user_id], QUERY_EXECUTE);
+}
+
+function getPostViews($link, $id): array {
+    $sql = "SELECT COUNT(*) v FROM `views` v" .
+        " WHERE v.post_id = ?";
+
+    return db_query_prepare_stmt($link, $sql, [$id], QUERY_ASSOC);
 }
 
 function addComment($link, $text, $post, $author)

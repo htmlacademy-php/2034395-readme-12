@@ -12,7 +12,7 @@ function authUser($data, $link): bool
 
     $user = db_query_prepare_stmt($link, $sql, [$email], QUERY_ASSOC);
 
-    if (!password_verify($password, $user[0]['password'])) {
+    if (!password_verify($password, $user[0]['password'] ?? '')) {
         return false;
     }
 

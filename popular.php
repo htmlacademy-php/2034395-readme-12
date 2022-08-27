@@ -8,9 +8,10 @@ $sort = $_GET['sort'] ?? 'views';
 function getPostsList($link, $page = 1, $sort = 'views')
 {
     $sql = "SELECT p.*, u.avatar_url, u.login, ct.name, ct.class_name FROM `posts` p"
+        . " LEFT JOIN (SELECT `post_id`, COUNT(*) cnt from `views` GROUP BY `post_id`) v ON p.id = v.post_id"
         . " JOIN `users` u ON p.author = u.id"
         . " JOIN `content_types` ct ON p.content_type = ct.id"
-        . " ORDER BY `views` DESC";
+        . " ORDER BY v.cnt DESC";
 
     $result = db_query_prepare_stmt($link, $sql, [], QUERY_ASSOC);
 
