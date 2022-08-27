@@ -83,8 +83,8 @@ function validateData($data, $link, $type, $user): array
 
 function addPost($link, $post)
 {
-    $sql = "INSERT INTO `posts` (`date`, `title`, `content`, `cite_author`, `content_type`, `author`, `image_url`, `video_url`, `site_url`, `views`)" .
-        " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+    $sql = "INSERT INTO `posts` (`date`, `title`, `content`, `cite_author`, `content_type`, `author`, `image_url`, `video_url`, `site_url`)" .
+        " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
 
     return db_query_prepare_stmt($link, $sql, $post['data'], QUERY_EXECUTE);
 }

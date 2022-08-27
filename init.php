@@ -11,8 +11,8 @@ $user = null;
 $is_auth = false;
 
 if (isset($_COOKIE['user_email']) && isset($_COOKIE['user_password'])) {
-    $email = $_COOKIE['user_email'];
-    $password = $_COOKIE['user_password'];
+    $email = $_COOKIE['user_email'] ?? null;
+    $password = $_COOKIE['user_password'] ?? null;
 
     $user = getUserData($link, 'email', $email);
 
