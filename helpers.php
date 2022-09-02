@@ -1,4 +1,8 @@
 <?php
+//fixme опиши все передаваемые и возвращаемые значения
+//fixme проверь возвращаемые значения и их корректность
+//fixme проверь уровень вложенности - не должен быть больше 3
+//fixme этот класс умеет слишком многое
 
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
@@ -36,7 +40,7 @@ function is_date_valid(string $date): bool
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = [])
+function db_get_prepare_stmt($link, $sql, $data = []): mysqli_stmt
 {
     $stmt = mysqli_prepare($link, $sql);
 
@@ -54,14 +58,10 @@ function db_get_prepare_stmt($link, $sql, $data = [])
 
             if (is_int($value)) {
                 $type = 'i';
-            } else {
-                if (is_string($value)) {
-                    $type = 's';
-                } else {
-                    if (is_double($value)) {
-                        $type = 'd';
-                    }
-                }
+            } else if (is_string($value)) {
+                $type = 's';
+            } else if (is_float($value)) {
+                $type = 'd';
             }
 
             if ($type) {
@@ -84,21 +84,14 @@ function db_get_prepare_stmt($link, $sql, $data = [])
     return $stmt;
 }
 
+//fixme константы лучше вынести в отдельный файлик или задавать в начале. Это не соответствует PSR
 const QUERY_DEFAULT = 'default';
 const QUERY_ASSOC = 'assoc';
 const QUERY_EXECUTE = 'execute';
 
-function db_query_prepare_stmt($link, $sql, $data = [], $type = QUERY_DEFAULT): array|null
+function db_query_prepare_stmt(mysqli $link, $sql, $data = [], $type = QUERY_DEFAULT): array|null
 {
     $answer = null;
-    $stmt = null;
-
-    if (!$link) {
-        $error = mysqli_connect_error();
-        print($error);
-        die();
-    }
-
     $stmt = db_get_prepare_stmt($link, $sql, $data);
 
     mysqli_stmt_execute($stmt);
@@ -178,6 +171,7 @@ function include_template(string $name, array $data = []): string
 
 function validateFile($file, $path): array|bool
 {
+    var_dump($file);die();
     if (!$file['name']) {
         return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
     }
@@ -203,6 +197,7 @@ function setUserDataCookies($email, $password, $expires): void
     setcookie('user_password', $password, $expires);
 }
 
+// fixme по документации возвращает string, а фактически - bool
 /**
  * Функция проверяет доступно ли видео по ссылке на youtube
  * @param string $url ссылка на видео
@@ -272,14 +267,14 @@ function embed_youtube_cover(string $youtube_url = null)
  * @param string $youtube_url Ссылка на youtube видео
  * @return array
  */
-function extract_youtube_id($youtube_url)
+function extract_youtube_id($youtube_url): ?string
 {
     $id = false;
 
     $parts = parse_url($youtube_url);
 
     if ($parts) {
-        if ($parts['path'] == '/watch') {
+        if ($parts['path'] === '/watch') {
             parse_str($parts['query'], $vars);
             $id = $vars['v'] ?? null;
         } else {
@@ -347,7 +342,7 @@ function showData($text, $maxSymbols = 300): array
     $symbols = 0;
 
     foreach ($array as $word) {
-        $symbols = $symbols + strlen($word);
+        $symbols += strlen($word);
 
         if ($symbols < $maxSymbols) {
             $result['text'] .= ' ' . $word;
@@ -459,12 +454,14 @@ function getPostById($link, $id)
 
     $post = db_query_prepare_stmt($link, $sql, [$id]);
 
+    //fixme упрощай
     if (isset($post['id'])) {
         return $post;
-    } else {
-        http_response_code(404);
-        die();
     }
+
+    http_response_code(404);
+    die();
+
 }
 
 function checkIsUserViewPost($link, $user_id, $post_id): array {
@@ -475,6 +472,7 @@ function checkIsUserViewPost($link, $user_id, $post_id): array {
 }
 
 function addPostView($link, $user_id, $post_id) {
+    //fixme используй implode вместо join
     $isUserViewPost = join(' ', checkIsUserViewPost($link, $user_id, $post_id));
 
     if ($isUserViewPost) {
@@ -511,8 +509,11 @@ const EMAIL_SUB_PRESET = [
     'content' => '<p>new subscriber</p>'
 ];
 
-function sendEmailNotify($sender, $recipient, $type)
+//fixme лучше передавать значения пресетов в качестве аргументов функции.
+// сейчас она выглядит слишком много знающей
+function sendEmailNotify($sender, $recipient, string $subject, string $body)
 {
+    // fixme параметры лучше вынести в отдельный метод инициализации, подгружать из конфига
     $transport = Transport::fromDsn('smtp://parismay.frontend@mail.ru:psswd@smtp.mail.ru:465');
     $mailer = new Mailer($transport);
 
@@ -523,9 +524,10 @@ function sendEmailNotify($sender, $recipient, $type)
         ->text($sender['login'] . ' ' . $type == EMAIL_SUB_TYPE ? 'your new follower' : 'send a new message')
         ->html($type == EMAIL_SUB_TYPE ? EMAIL_SUB_PRESET['content'] : EMAIL_MESSAGE_PRESET['content']);
 
+    // fixme не учитываешь интерфейс ошибки TransportExceptionInterface.
     try {
         $mailer->send($email);
-    } catch (TransportException $e) {
+    } catch (\Throwable $e) {
         echo("<div class='error'>" . $e->getMessage() . "</div>");
     }
 }

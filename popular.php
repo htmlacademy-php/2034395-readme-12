@@ -5,7 +5,7 @@ $tab = $_GET['tab'] ?? 'all';
 $page = $_GET['page'] ?? 1;
 $sort = $_GET['sort'] ?? 'views';
 
-function getPostsList($link, $page = 1, $sort = 'views')
+function getPostsList($link, $page = 1, $sort = 'views', $tab)
 {
     $sql = "SELECT p.*, u.avatar_url, u.login, ct.name, ct.class_name FROM `posts` p"
         . " LEFT JOIN (SELECT `post_id`, COUNT(*) cnt from `views` GROUP BY `post_id`) v ON p.id = v.post_id"
@@ -13,7 +13,7 @@ function getPostsList($link, $page = 1, $sort = 'views')
         . " JOIN `content_types` ct ON p.content_type = ct.id"
         . " ORDER BY v.cnt DESC";
 
-    $result = db_query_prepare_stmt($link, $sql, [], QUERY_ASSOC);
+    $result = db_query_prepare_stmt($link, $sql, [$tab], QUERY_ASSOC);
 
     $offset = 0;
 
@@ -32,7 +32,7 @@ function filterPosts($post)
 $data = getPostsList($link, $page);
 
 if ($tab !== 'all') {
-    $data = array_filter($data, "filterPosts");
+    $data = array_filter($data, fn ($post) => $post['name'] ?? '' === $tab);
 }
 
 $content = include_template('popular-page.php', [

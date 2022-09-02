@@ -1,5 +1,6 @@
 <?php
 require_once 'requires_guest.php';
+//fixme $user might be null
 
 $post_id = $_GET['id'] ?? null;
 $action = $_GET['act'] ?? null;

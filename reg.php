@@ -5,7 +5,7 @@ $data = $_POST;
 
 $reg_data = ['errors' => []];
 
-function validateEmail($email, $link): array|bool
+function validateEmail($email, $link): ?array
 {
     $sql = "SELECT * FROM `users` u WHERE u.email = ?";
 
@@ -17,7 +17,7 @@ function validateEmail($email, $link): array|bool
         return ['target' => 'email', 'text' => 'Указанный адрес электронной почты уже зарегистрирован.'];
     }
 
-    return false;
+    return null;
 }
 
 function validateData($data, $link)

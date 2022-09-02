@@ -1,4 +1,9 @@
 <?php
+/**
+ * @var string $title
+ * @var string $target
+ * @var bool $is_auth
+ */
 $avatar = $user['avatar_url'] ?? 'userpic.jpg';
 
 ?>

@@ -6,7 +6,8 @@ $post_type = $_GET['type'] ?? 'photo';
 
 $post_data = ['errors' => []];
 
-function getCategoryId($link, $type)
+// fixme: указать значения параметров
+function getCategoryId($link, $type): string|int
 {
     $sql = "SELECT ct.id FROM content_types ct WHERE `name` = ?";
 
@@ -14,6 +15,7 @@ function getCategoryId($link, $type)
     return $result['id'];
 }
 
+// fixme: указать значения параметров
 function validateUrl($url, $type): array|bool
 {
     $isUrlValid = filter_var($url, FILTER_VALIDATE_URL);
@@ -29,6 +31,7 @@ function validateUrl($url, $type): array|bool
     return false;
 }
 
+// fixme: указать значения параметров
 function validateData($data, $link, $type, $user): array
 {
     $ct = getCategoryId($link, $type);
@@ -81,6 +84,7 @@ function validateData($data, $link, $type, $user): array
     ];
 }
 
+// fixme: указать значения параметров и возвращаемые значения
 function addPost($link, $post)
 {
     $sql = "INSERT INTO `posts` (`date`, `title`, `content`, `cite_author`, `content_type`, `author`, `image_url`, `video_url`, `site_url`)" .
@@ -90,11 +94,12 @@ function addPost($link, $post)
 }
 
 if (count($data) > 0) {
-    $post_data = validateData($data, $link, $post_type, $user);
+    $post_data = validateData($data, $link, $post_type, $user); // fixme переменная $user может быть null. Как и переменная $link
 
+    // fixme: строгое сравнение
     if (count($post_data['errors']) == 0) {
-        addPost($link, $post_data);
-        header("Location: /popular.php?tab=all&page=1&sort=views");
+        addPost($link, $post_data); //fixme здесь может быть null и произойти ошибка сохранения
+        header("Location: /popular.php?tab=all&page=1&sort=views"); // fixme редирект должен происходить на страницу поста, а не на страницу популярного
         exit();
     }
 }

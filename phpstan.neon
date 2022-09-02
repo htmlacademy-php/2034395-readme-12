@@ -1,0 +1,23 @@
+parameters:
+    level: 6
+    paths:
+        - templates
+        - add.php
+        - db.php
+        - helpers.php
+        - index.php
+        - init.php
+        - logout.php
+        - like.php
+        - popular.php
+        - post.php
+        - profile.php
+        - reg.php
+        - requires_auth.php
+        - requires_guest.php
+        - search.php
+        - subscription.php
+    ignoreErrors:
+      -
+        message: '#Variable \$[a-zA-Z0-9\\_]+ might not be defined\.#'
+        path: templates
