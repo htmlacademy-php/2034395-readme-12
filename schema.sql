@@ -1,8 +1,8 @@
-CREATE DATABASE readme2
+CREATE DATABASE kirill
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_general_ci;
 
-use readme2;
+use kirill;
 
 CREATE TABLE `users`
 (

@@ -146,7 +146,7 @@
         </section>
         <section class="authorization">
             <h2 class="visually-hidden">Авторизация</h2>
-            <form class="authorization__form form" action="../index.php" method="post">
+            <form class="authorization__form form" action="../login.php" method="post">
                 <div class="authorization__input-wrapper form__input-wrapper">
                     <input class="authorization__input authorization__input--login form__input" type="email"
                            name="email"
@@ -208,13 +208,14 @@
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
                     <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="feed.html">Моя лента</a>
+                        <a class="footer__page-link" href="#">Моя лента</a>
                     </li>
                     <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="popular.html">Популярный контент</a>
+                        <a class="footer__page-link" href="../popular.php?tab=all&page=1&sort=views">Популярный
+                            контент</a>
                     </li>
                     <li class="footer__my-page footer__my-page--messages">
-                        <a class="footer__page-link" href="messages.html">Личные сообщения</a>
+                        <a class="footer__page-link" href="../messages.html">Личные сообщения</a>
                     </li>
                 </ul>
                 <div class="footer__copyright">

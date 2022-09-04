@@ -1,16 +1,26 @@
 <?php
-$profile = getUserData($link, 'id', $post['author']);
+/**
+ * @var mysqli $link
+ * @var array $post
+ * @var array $user
+ * @var array $comments
+ * @var int $views
+ */
+
+$profile = get_user_data($link, 'id', $post['author']);
+
+$profile = $profile[count($profile) - 1];
 
 $sql = "SELECT * FROM `posts` p" .
     " WHERE p.author = ?";
 
-$user_posts = db_query_prepare_stmt($link, $sql, [$post['author']], QUERY_ASSOC);
+$user_posts = db_query_prepare_stmt($link, $sql, [$post['author']]);
 
 $is_owner = false;
-$is_subscribed = checkIsUserSubscribed($link, $user['id'], $profile['id']);
-$is_liked = isPostLiked($link, $user['id'], $post['id']);
+$is_subscribed = check_is_user_subscribed($link, $user['id'], $profile['id']);
+$is_liked = is_post_liked($link, $user['id'], $post['id']);
 
-if ($profile['id'] == $user['id']) {
+if ($profile['id'] === $user['id']) {
     $is_owner = true;
 }
 ?>
@@ -22,7 +32,7 @@ if ($profile['id'] == $user['id']) {
             <h2 class="visually-hidden">Публикация</h2>
             <div class="post-details__wrapper <?= $post['class_name'] ?>">
                 <div class="post-details__main-block post post--details">
-                    <?php if ($post['name'] == 'quote'): ?>
+                    <?php if ($post['name'] === 'quote'): ?>
                         <div class="post-details__image-wrapper post-quote">
                             <div class="post__main">
                                 <blockquote>
@@ -35,7 +45,7 @@ if ($profile['id'] == $user['id']) {
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($post['name'] == 'text'): ?>
+                    <?php if ($post['name'] === 'text'): ?>
                         <div class="post-details__image-wrapper post-text">
                             <div class="post__main">
                                 <p>
@@ -45,7 +55,7 @@ if ($profile['id'] == $user['id']) {
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($post['name'] == 'link'): ?>
+                    <?php if ($post['name'] === 'link'): ?>
                         <div class="post__main">
                             <div class="post-link__wrapper">
                                 <a class="post-link__external" target="_blank"
@@ -66,14 +76,14 @@ if ($profile['id'] == $user['id']) {
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($post['name'] == 'photo'): ?>
+                    <?php if ($post['name'] === 'photo'): ?>
                         <div class="post-details__image-wrapper post-photo__image-wrapper">
                             <img src="<?= htmlspecialchars($post['image_url']); ?>" alt="Фото от пользователя"
                                  width="760" height="507">
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($post['name'] == 'video'): ?>
+                    <?php if ($post['name'] === 'video'): ?>
                         <div class="post-details__image-wrapper post-photo__image-wrapper">
                             <?= embed_youtube_video($post['video_url']); ?>
                         </div>
@@ -83,13 +93,13 @@ if ($profile['id'] == $user['id']) {
                             <?php if (!$is_liked): ?>
                             <a
                                 class="post__indicator post__indicator--likes button"
-                                href="like.php?action=like&address=post&post_id=<?= $post['id'] ?>"
+                                href="../like.php?address=post&post_id=<?= $post['id'] ?>"
                                 title="Поставить лайк"
                             >
                                 <?php else: ?>
                                 <a
                                     class="post__indicator post__indicator--likes-active button"
-                                    href="like.php?action=unlike&address=post&post_id=<?= $post['id'] ?>"
+                                    href="../like.php?address=post&post_id=<?= $post['id'] ?>"
                                     title="Убрать лайк"
                                 >
                                     <?php endif; ?>
@@ -100,7 +110,7 @@ if ($profile['id'] == $user['id']) {
                                          height="17">
                                         <use xlink:href="#icon-heart-active"></use>
                                     </svg>
-                                    <span><?= count(getPostLikes($link, $post['id'])) ?></span>
+                                    <span><?= count(get_post_likes($link, $post['id'])) ?></span>
                                     <span class="visually-hidden">количество лайков</span>
                                 </a>
                                 <a class="post__indicator post__indicator--comments button" href="#"
@@ -128,10 +138,9 @@ if ($profile['id'] == $user['id']) {
                         <li><a href="#">#photooftheday</a></li>
                         <li><a href="#">#canon</a></li>
                         <li><a href="#">#landscape</a></li>
-                        <li><a href="#">#щикарныйвид</a></li>
                     </ul>
                     <div class="comments">
-                        <form class="comments__form form" action="post.php?id=<?= $post['id'] ?>" method="post">
+                        <form class="comments__form form" action="../post.php?id=<?= $post['id'] ?>" method="post">
                             <div class="comments__my-avatar">
                                 <img class="comments__picture"
                                      src="../img/<?= $profile['avatar_url'] ?? 'userpic.jpg' ?>"
@@ -170,11 +179,11 @@ if ($profile['id'] == $user['id']) {
                                         <div class="comments__info">
                                             <div class="comments__name-wrapper">
                                                 <a class="comments__user-name"
-                                                   href="profile.php?id=<?= $post['author'] ?>">
+                                                   href="../profile.php?id=<?= $post['author'] ?>">
                                                     <span><?= $el['login'] ?></span>
                                                 </a>
                                                 <time class="comments__time" datetime=<?= $el['date'] ?>>
-                                                    <?= normalizeDate($el['date']) . " назад" ?>
+                                                    <?= normalize_date($el['date']) . " назад" ?>
                                                 </time>
                                             </div>
                                             <p class="comments__text">
@@ -197,27 +206,27 @@ if ($profile['id'] == $user['id']) {
                     <div class="post-details__user-info user__info">
                         <div class="post-details__avatar user__avatar">
                             <a class="post-details__avatar-link user__avatar-link"
-                               href="profile.php?id=<?= $profile['id'] ?>">
+                               href="../profile.php?id=<?= $profile['id'] ?>">
                                 <img class="post-details__picture user__picture"
                                      src="../img/<?= $profile['avatar_url'] ?? 'userpic.jpg' ?>"
                                      alt="Аватар пользователя">
                             </a>
                         </div>
                         <div class="post-details__name-wrapper user__name-wrapper">
-                            <a class="post-details__name user__name" href="profile.php?id=<?= $profile['id'] ?>">
+                            <a class="post-details__name user__name" href="../profile.php?id=<?= $profile['id'] ?>">
                                 <span><?= htmlspecialchars($profile['login']) ?></span>
                             </a>
                             <time class="post-details__time user__time" datetime="2014-03-20">
-                                <?= normalizeDate($profile['registration_date']) . " на сайте" ?>
+                                <?= normalize_date($profile['registration_date']) . " на сайте" ?>
                             </time>
                         </div>
                     </div>
                     <div class="post-details__rating user__rating">
                         <p class="post-details__rating-item user__rating-item user__rating-item--subscribers">
-                            <span class="post-details__rating-amount user__rating-amount"><?= count(getSubs($link,
+                            <span class="post-details__rating-amount user__rating-amount"><?= count(get_subscriptions($link,
                                     $profile['id'])) ?></span>
                             <span
-                                class="post-details__rating-text user__rating-text"><?= get_noun_plural_form(count(getSubs($link,
+                                class="post-details__rating-text user__rating-text"><?= get_noun_plural_form(count(get_subscriptions($link,
                                     $profile['id'])), 'подписчик', 'подписчика', 'подписчиков') ?></span>
                         </p>
                         <p class="post-details__rating-item user__rating-item user__rating-item--publications">
@@ -235,14 +244,14 @@ if ($profile['id'] == $user['id']) {
                             <?php if (!$is_subscribed): ?>
                                 <a
                                     class="user__button user__button--subscription button button--main"
-                                    href="subscription.php?action=sub&address=post&post_id=<?= $post['id'] ?>&post_author=<?= $post['author'] ?>"
+                                    href="../subscription.php?action=sub&address=post&post_id=<?= $post['id'] ?>&post_author=<?= $post['author'] ?>"
                                 >
                                     Подписаться
                                 </a>
                             <?php else: ?>
                                 <a
                                     class="user__button user__button--subscription button button--main"
-                                    href="subscription.php?action=unsub&address=post&post_id=<?= $post['id'] ?>&post_author=<?= $post['author'] ?>"
+                                    href="../subscription.php?action=unsub&address=post&post_id=<?= $post['id'] ?>&post_author=<?= $post['author'] ?>"
                                 >
                                     Отписаться
                                 </a>

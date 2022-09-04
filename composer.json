@@ -1,6 +1,7 @@
 {
   "require": {
-    "symfony/mailer": "6.0.11"
+    "symfony/mailer": "6.0.11",
+    "ext-mysqli": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.8",

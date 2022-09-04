@@ -1,5 +1,14 @@
 <?php
-$profile = getUserData($link, 'id', $user['id']);
+
+/**
+ * @var mysqli $link
+ * @var array $user
+ * @var string $tab
+ * @var array $posts
+ * @var int $posts_count
+ * @var int $page
+ * @var string $sort
+ */
 
 ?>
 
@@ -13,7 +22,10 @@ $profile = getUserData($link, 'id', $user['id']);
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="#">
+                        <a
+                            class="sorting__link <?php if($sort === 'views'): ?>sorting__link--active<?php endif; ?>"
+                            href="../popular.php?tab=<?= $tab ?>&page=<?= $page ?>&sort=views"
+                        >
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -21,7 +33,10 @@ $profile = getUserData($link, 'id', $user['id']);
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a
+                            class="sorting__link <?php if($sort === 'likes'): ?>sorting__link--active<?php endif; ?>"
+                            href="../popular.php?tab=<?= $tab ?>&page=<?= $page ?>&sort=likes"
+                        >
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -29,7 +44,10 @@ $profile = getUserData($link, 'id', $user['id']);
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a
+                            class="sorting__link <?php if($sort === 'date'): ?>sorting__link--active<?php endif; ?>"
+                            href="../popular.php?tab=<?= $tab ?>&page=<?= $page ?>&sort=date"
+                        >
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -47,9 +65,9 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--ellipse
                                 filters__button--all
-                                <?php if ($tab == 'all'): ?>filters__button--active<?php endif; ?>
+                                <?php if ($tab === 'all'): ?>filters__button--active<?php endif; ?>
                             "
-                            href="?tab=all"
+                            href="../popular.php?tab=all&page=<?= $page ?>&sort=<?= $sort ?>"
                         >
                             <span>Все</span>
                         </a>
@@ -60,9 +78,9 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--photo
                                 button
-                                <?php if ($tab == 'photo'): ?>filters__button--active<?php endif; ?>
+                                <?php if ($tab === 'photo'): ?>filters__button--active<?php endif; ?>
                             "
-                            href="?tab=photo"
+                            href="../popular.php?tab=photo&page=<?= $page ?>&sort=<?= $sort ?>"
                         >
                             <span class="visually-hidden">Фото</span>
                             <svg class="filters__icon" width="22" height="18">
@@ -76,9 +94,9 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--video
                                 button
-                                <?php if ($tab == 'video'): ?>filters__button--active<?php endif; ?>
+                                <?php if ($tab === 'video'): ?>filters__button--active<?php endif; ?>
                             "
-                            href="?tab=video"
+                            href="../popular.php?tab=video&page=<?= $page ?>&sort=<?= $sort ?>"
                         >
                             <span class="visually-hidden">Видео</span>
                             <svg class="filters__icon" width="24" height="16">
@@ -92,9 +110,9 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--text
                                 button
-                                <?php if ($tab == 'text'): ?>filters__button--active<?php endif; ?>
+                                <?php if ($tab === 'text'): ?>filters__button--active<?php endif; ?>
                             "
-                            href="?tab=text"
+                            href="../popular.php?tab=text&page=<?= $page ?>&sort=<?= $sort ?>"
                         >
                             <span class="visually-hidden">Текст</span>
                             <svg class="filters__icon" width="20" height="21">
@@ -108,9 +126,9 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--quote
                                 button
-                                <?php if ($tab == 'quote'): ?>filters__button--active<?php endif; ?>
+                                <?php if ($tab === 'quote'): ?>filters__button--active<?php endif; ?>
                             "
-                            href="?tab=quote"
+                            href="../popular.php?tab=quote&page=<?= $page ?>&sort=<?= $sort ?>"
                         >
                             <span class="visually-hidden">Цитата</span>
                             <svg class="filters__icon" width="21" height="20">
@@ -124,9 +142,9 @@ $profile = getUserData($link, 'id', $user['id']);
                                 filters__button
                                 filters__button--link
                                 button
-                                <?php if ($tab == 'link'): ?>filters__button--active<?php endif; ?>
+                                <?php if ($tab === 'link'): ?>filters__button--active<?php endif; ?>
                             "
-                            href="?tab=link"
+                            href="../popular.php?tab=link&page=<?= $page ?>&sort=<?= $sort ?>"
                         >
                             <span class="visually-hidden">Ссылка</span>
                             <svg class="filters__icon" width="21" height="18">
@@ -138,18 +156,18 @@ $profile = getUserData($link, 'id', $user['id']);
             </div>
         </div>
         <div class="popular__posts">
-            <?php foreach ($data as $post): ?>
+            <?php foreach ($posts as $post): ?>
                 <?php
-                $normalized_date = normalizeDate($post['date']);
-                $comments = getComments($link, $post['id']);
-                $likes = getPostLikes($link, $post['id']);
+                $normalized_date = normalize_date($post['date']);
+                $comments = get_comments($link, $post['id']);
+                $likes = get_post_likes($link, $post['id']);
 
-                $is_liked = isPostLiked($link, $user['id'], $post['id']);
+                $is_liked = is_post_liked($link, $user['id'], $post['id']);
                 ?>
                 <article class="popular__post post <?= $post['class_name'] ?>">
                     <header class="post__header">
                         <h2>
-                            <a href="post.php?id=<?= $post['id'] ?>">
+                            <a href="../post.php?id=<?= $post['id'] ?>">
                                 <?= htmlspecialchars($post['title']) ?>
                             </a>
                         </h2>
@@ -165,10 +183,11 @@ $profile = getUserData($link, 'id', $user['id']);
                         <?php endif; ?>
 
                         <?php if ($post['name'] == 'text'): ?>
-                            <?php $postTextData = showData($post['content']) ?>
+                            <?php $postTextData = show_data($post['content']) ?>
                             <p><?= htmlspecialchars($postTextData['text']) ?></p>
                             <?php if ($postTextData['isLong']): ?>
-                                <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать далее</a>
+                                <a class="post-text__more-link" href="../post.php?id=<?= $post['id'] ?>">Читать
+                                    далее</a>
                             <?php endif; ?>
                         <?php endif; ?>
 
@@ -213,10 +232,10 @@ $profile = getUserData($link, 'id', $user['id']);
                     </div>
                     <footer class="post__footer">
                         <div class="post__author">
-                            <a class="post__author-link" href="profile.php?id=<?= $post['author'] ?>" title="Автор">
+                            <a class="post__author-link" href="../profile.php?id=<?= $post['author'] ?>" title="Автор">
                                 <div class="post__avatar-wrapper">
                                     <img class="post__author-avatar"
-                                         src="../img/<?= $profile['avatar_url'] ?? 'userpic.jpg' ?>"
+                                         src="../img/<?= $user['avatar_url'] ?? 'userpic.jpg' ?>"
                                          alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
@@ -231,13 +250,13 @@ $profile = getUserData($link, 'id', $user['id']);
                                 <?php if (!$is_liked): ?>
                                 <a
                                     class="post__indicator post__indicator--likes button"
-                                    href="like.php?action=like&address=popular&post_id=<?= $post['id'] ?>"
+                                    href="../like.php?address=popular&post_id=<?= $post['id'] ?>&tab=<?= $tab ?>&page=<?= $page ?>&sort=<?= $sort ?>"
                                     title="Поставить лайк"
                                 >
                                     <?php else: ?>
                                     <a
                                         class="post__indicator post__indicator--likes-active button"
-                                        href="like.php?action=unlike&address=popular&post_id=<?= $post['id'] ?>"
+                                        href="../like.php?address=popular&post_id=<?= $post['id'] ?>&tab=<?= $tab ?>&page=<?= $page ?>&sort=<?= $sort ?>"
                                         title="Убрать лайк"
                                     >
                                         <?php endif; ?>
@@ -252,7 +271,7 @@ $profile = getUserData($link, 'id', $user['id']);
                                         <span class="visually-hidden">количество лайков</span>
                                     </a>
                                     <a class="post__indicator post__indicator--comments button"
-                                       href="post.php?id=<?= $post['id'] ?>" title="Комментарии">
+                                       href="../post.php?id=<?= $post['id'] ?>" title="Комментарии">
                                         <svg class="post__indicator-icon" width="19" height="17">
                                             <use xlink:href="#icon-comment"></use>
                                         </svg>
@@ -269,13 +288,13 @@ $profile = getUserData($link, 'id', $user['id']);
             <div class="popular__page-links">
                 <a
                     class="popular__page-link popular__page-link--prev button button--gray"
-                    href="popular.php?tab=all&page=<?= max($page - 1, 1) ?>&sort=views"
+                    href="../popular.php?tab=<?= $tab ?>&page=<?= max($page - 1, 1) ?>&sort=<?= $sort ?>"
                 >
                     Предыдущая страница
                 </a>
                 <a
                     class="popular__page-link popular__page-link--next button button--gray"
-                    href="popular.php?tab=all&page=<?= min($page + 1, round($posts_count / 6)) ?>&sort=views"
+                    href="../popular.php?tab=<?= $tab ?>&page=<?= min($page + 1, round($posts_count / 6)) ?>&sort=<?= $sort ?>"
                 >
                     Следующая страница
                 </a>

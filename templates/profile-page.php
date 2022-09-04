@@ -1,3 +1,15 @@
+<?php
+/**
+ * @var array $profile
+ * @var array $posts
+ * @var mysqli $link
+ * @var bool $is_owner
+ * @var bool $is_subscribed
+ * @var array $user
+ */
+
+?>
+
 <main class="page__main page__main--profile">
     <h1 class="visually-hidden">Профиль</h1>
     <div class="profile profile--default">
@@ -11,7 +23,7 @@
                     <div class="profile__name-wrapper user__name-wrapper">
                         <span class="profile__name user__name"><?= htmlspecialchars($profile['login']) ?></span>
                         <time class="profile__user-time user__time" datetime="2014-03-20">
-                            <?= normalizeDate($profile['registration_date']) . " на сайте" ?>
+                            <?= normalize_date($profile['registration_date']) . " на сайте" ?>
                         </time>
                     </div>
                 </div>
@@ -23,9 +35,9 @@
                         </span>
                     </p>
                     <p class="profile__rating-item user__rating-item user__rating-item--subscribers">
-                        <span class="user__rating-amount"><?= count(getSubs($link, $profile['id'])) ?></span>
+                        <span class="user__rating-amount"><?= count(get_subscriptions($link, $profile['id'])) ?></span>
                         <span
-                            class="profile__rating-text user__rating-text"><?= get_noun_plural_form(count(getSubs($link,
+                            class="profile__rating-text user__rating-text"><?= get_noun_plural_form(count(get_subscriptions($link,
                                 $profile['id'])), 'подписчик', 'подписчика', 'подписчиков') ?></span>
                     </p>
                 </div>
@@ -34,14 +46,14 @@
                         <?php if (!$is_subscribed): ?>
                             <a
                                 class="profile__user-button user__button user__button--subscription button button--main"
-                                href="subscription.php?action=sub&address=profile&profile_id=<?= $profile['id'] ?>"
+                                href="../subscription.php?action=sub&address=profile&profile_id=<?= $profile['id'] ?>"
                             >
                                 Подписаться
                             </a>
                         <?php else: ?>
                             <a
                                 class="profile__user-button user__button user__button--subscription button button--main"
-                                href="subscription.php?action=unsub&address=profile&profile_id=<?= $profile['id'] ?>"
+                                href="../subscription.php?action=unsub&address=profile&profile_id=<?= $profile['id'] ?>"
                             >
                                 Отписаться
                             </a>
@@ -72,11 +84,11 @@
                     <section class="profile__posts tabs__content tabs__content--active">
                         <h2 class="visually-hidden">Публикации</h2>
                         <?php foreach ($posts as $post): ?>
-                            <?php $is_liked = isPostLiked($link, $user['id'], $post['id']); ?>
+                            <?php $is_liked = is_post_liked($link, $user['id'], $post['id']); ?>
                             <article class="profile__post post <?= $post['class_name'] ?>">
                                 <header class="post__header">
                                     <h2>
-                                        <a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                        <a href="../post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post['title']) ?></a>
                                     </h2>
                                 </header>
                                 <div class="post__main">
@@ -90,10 +102,10 @@
                                     <?php endif; ?>
 
                                     <?php if ($post['name'] == 'text'): ?>
-                                        <?php $postTextData = showData($post['content']) ?>
+                                        <?php $postTextData = show_data($post['content']) ?>
                                         <p><?= htmlspecialchars($postTextData['text']) ?></p>
                                         <?php if ($postTextData['isLong']): ?>
-                                            <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать
+                                            <a class="post-text__more-link" href="../post.php?id=<?= $post['id'] ?>">Читать
                                                 далее</a>
                                         <?php endif; ?>
                                     <?php endif; ?>
@@ -145,13 +157,13 @@
                                             <?php if (!$is_liked): ?>
                                             <a
                                                 class="post__indicator post__indicator--likes button"
-                                                href="like.php?action=like&address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
+                                                href="../like.php?address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
                                                 title="Поставить лайк"
                                             >
                                                 <?php else: ?>
                                                 <a
                                                     class="post__indicator post__indicator--likes-active button"
-                                                    href="like.php?action=unlike&address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
+                                                    href="../like.php?address=profile&post_id=<?= $post['id'] ?>&profile_id=<?= $profile['id'] ?>"
                                                     title="Убрать лайк"
                                                 >
                                                     <?php endif; ?>
@@ -162,7 +174,7 @@
                                                          width="20" height="17">
                                                         <use xlink:href="#icon-heart-active"></use>
                                                     </svg>
-                                                    <span><?= count(getPostLikes($link, $post['id'])) ?></span>
+                                                    <span><?= count(get_post_likes($link, $post['id'])) ?></span>
                                                     <span class="visually-hidden">количество лайков</span>
                                                 </a>
                                                 <a class="post__indicator post__indicator--repost button" href="#"
@@ -175,7 +187,7 @@
                                                 </a>
                                         </div>
                                         <time class="post__time" datetime="<?= $post['date'] ?>">
-                                            <?= normalizeDate($post['date']) . " назад" ?>
+                                            <?= normalize_date($post['date']) . " назад" ?>
                                         </time>
                                     </div>
                                     <ul class="post__tags">
@@ -184,11 +196,10 @@
                                         <li><a href="#">#photooftheday</a></li>
                                         <li><a href="#">#canon</a></li>
                                         <li><a href="#">#landscape</a></li>
-                                        <li><a href="#">#щикарныйвид</a></li>
                                     </ul>
                                 </footer>
                                 <div class="comments">
-                                    <a class="comments__button button" href="post.php?id=<?= $post['id'] ?>">Показать
+                                    <a class="comments__button button" href="../post.php?id=<?= $post['id'] ?>">Показать
                                         комментарии</a>
                                 </div>
                             </article>

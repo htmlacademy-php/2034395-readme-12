@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var array $posts
+ * @var mysqli $link
+ * @var string $search_data
+ */
+
+?>
+
 <main class="page__main page__main--search-results">
     <h1 class="visually-hidden">Страница результатов поиска</h1>
     <section class="search">
@@ -13,9 +22,9 @@
                 <div class="search__content">
                     <?php foreach ($posts as $post): ?>
                         <?php
-                        $content_class = getContentClassById($link, $post["content_type"]);
-                        $avatar = $post['avatar_url'] ?? 'userpic.jpg';
-                        $normalized_date = normalizeDate($post['date']);
+                            $content_class = get_content_class_by_id($link, $post["content_type"]);
+                            $avatar = $post['avatar_url'] ?? 'userpic.jpg';
+                            $normalized_date = normalize_date($post['date']);
                         ?>
                         <article class="search__post post <?= $content_class ?>">
                             <header class="post__header post__author">
@@ -31,9 +40,9 @@
                                 </a>
                             </header>
                             <div class="post__main">
-                                <?php if ($content_class == 'post-photo'): ?>
+                                <?php if ($content_class === 'post-photo'): ?>
                                     <h2>
-                                        <a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post["title"]) ?></a>
+                                        <a href="../post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post["title"]) ?></a>
                                     </h2>
                                     <div class="post-photo__image-wrapper">
                                         <img src="../img/<?= $post["image_url"] ?>" alt="Фото от пользователя"
@@ -41,19 +50,19 @@
                                     </div>
                                 <?php endif; ?>
 
-                                <?php if ($content_class == 'post-text'): ?>
-                                    <?php $postTextData = showData($post['content']) ?>
+                                <?php if ($content_class === 'post-text'): ?>
+                                    <?php $postTextData = show_data($post['content']) ?>
                                     <h2>
-                                        <a href="post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post["title"]) ?></a>
+                                        <a href="../post.php?id=<?= $post['id'] ?>"><?= htmlspecialchars($post["title"]) ?></a>
                                     </h2>
                                     <p><?= htmlspecialchars($postTextData['text']) ?></p>
                                     <?php if ($postTextData['isLong']): ?>
-                                        <a class="post-text__more-link" href="post.php?id=<?= $post['id'] ?>">Читать
+                                        <a class="post-text__more-link" href="../post.php?id=<?= $post['id'] ?>">Читать
                                             далее</a>
                                     <?php endif; ?>
                                 <?php endif; ?>
 
-                                <?php if ($content_class == 'post-video'): ?>
+                                <?php if ($content_class === 'post-video'): ?>
                                     <div class="post-video__block">
                                         <div class="post-video__preview">
                                             <?= embed_youtube_cover($post['video_url']); ?>
@@ -67,7 +76,7 @@
                                     </div>
                                 <?php endif; ?>
 
-                                <?php if ($content_class == 'post-quote'): ?>
+                                <?php if ($content_class === 'post-quote'): ?>
                                     <blockquote>
                                         <p>
                                             <?= htmlspecialchars($post["content"]) ?>
@@ -76,7 +85,7 @@
                                     </blockquote>
                                 <?php endif; ?>
 
-                                <?php if ($content_class == 'post-link'): ?>
+                                <?php if ($content_class === 'post-link'): ?>
                                     <div class="post-link__wrapper">
                                         <a class="post-link__external" target="_blank" href="<?= $post['site_url'] ?>"
                                            title="Перейти по ссылке">
@@ -105,15 +114,18 @@
                                              height="17">
                                             <use xlink:href="#icon-heart-active"></use>
                                         </svg>
-                                        <span>250</span>
+                                        <span><?= count(get_post_likes($link, $post['id'])) ?></span>
                                         <span class="visually-hidden">количество лайков</span>
                                     </a>
-                                    <a class="post__indicator post__indicator--comments button" href="#"
-                                       title="Комментарии">
+                                    <a
+                                        class="post__indicator post__indicator--comments button"
+                                        href="../post.php?id=<?= $post['id'] ?>"
+                                        title="Комментарии"
+                                    >
                                         <svg class="post__indicator-icon" width="19" height="17">
                                             <use xlink:href="#icon-comment"></use>
                                         </svg>
-                                        <span>25</span>
+                                        <span><?= count(get_comments($link, $post['id'])) ?></span>
                                         <span class="visually-hidden">количество комментариев</span>
                                     </a>
                                 </div>

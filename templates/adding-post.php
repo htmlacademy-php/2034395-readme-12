@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var string $post_type
+ * @var array $errors
+ */
+?>
+
 <main class="page__main page__main--adding-post">
     <div class="page__main-section">
         <div class="container">
@@ -13,7 +20,7 @@
                                     adding-post__tabs-link
                                     filters__button
                                     filters__button--photo
-                                    <?php if ($post_type == 'photo'): ?>
+                                    <?php if ($post_type === 'photo'): ?>
                                         filters__button--active
                                         tabs__item--active
                                     <?php endif; ?>

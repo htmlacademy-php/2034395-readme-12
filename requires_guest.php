@@ -1,7 +1,11 @@
 <?php
 require_once 'init.php';
 
-if (!$is_auth) {
+/**
+ * @var array|null $user
+ */
+
+if (!$user) {
     header("Location: /");
     exit();
 }

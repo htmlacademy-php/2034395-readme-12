@@ -1,7 +1,7 @@
 <?php
 require_once 'init.php';
 
-setUserDataCookies("", "", time() - 3600);
+set_user_data_cookies("", "", time() - 3600);
 
-header("Location: /index.php");
+header("Location: /");
 exit();
