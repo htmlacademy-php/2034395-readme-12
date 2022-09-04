@@ -2,7 +2,8 @@
 /**
  * @var string $title
  * @var string $target
- * @var bool $is_auth
+ * @var string $content
+ * @var array $user
  */
 $avatar = $user['avatar_url'] ?? 'userpic.jpg';
 
@@ -111,7 +112,7 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
 <header class="header">
     <div class="header__wrapper container">
         <div class="header__logo-wrapper">
-            <a class="header__logo-link" href="../popular.php?tab=all&page=1&sort=views">
+            <a class="header__logo-link" href="../index.php">
                 <img class="header__logo" src="../img/logo.svg" alt="Логотип readme" width="128" height="24">
             </a>
             <p class="header__topic">
@@ -153,9 +154,9 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                     </li>
                 </ul>
                 <ul class="header__user-nav">
-                    <?php if ($is_auth): ?>
+                    <?php if (!empty($user)): ?>
                         <li class="header__profile">
-                            <a class="header__profile-link" href="profile.php?id=<?= $user['id'] ?>">
+                            <a class="header__profile-link" href="../profile.php?id=<?= $user['id'] ?>">
                                 <div class="header__avatar-wrapper">
                                     <img class="header__profile-avatar" src="../img/<?= $avatar ?>"
                                          alt="Аватар профиля">
@@ -174,7 +175,7 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
                                     <ul class="header__profile-nav">
                                         <li class="header__profile-nav-item">
                                             <a class="header__profile-nav-link"
-                                               href="profile.php?id=<?= $user['id'] ?>">
+                                               href="../profile.php?id=<?= $user['id'] ?>">
                                               <span class="header__profile-nav-text">
                                                 Мой профиль
                                               </span>
@@ -259,10 +260,10 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
                     <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="../feed.html">Моя лента</a>
+                        <a class="footer__page-link" href="#">Моя лента</a>
                     </li>
                     <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="../popular.html">Популярный контент</a>
+                        <a class="footer__page-link" href="../popular.php?tab=all&page=1&sort=views">Популярный контент</a>
                     </li>
                     <li class="footer__my-page footer__my-page--messages">
                         <a class="footer__page-link" href="../messages.html">Личные сообщения</a>

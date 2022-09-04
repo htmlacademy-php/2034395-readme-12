@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $search_data
+ */
+?>
+
 <main class="page__main page__main--search-results">
     <h1 class="visually-hidden">Страница результатов поиска (нет результатов)</h1>
     <section class="search">

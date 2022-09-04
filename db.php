@@ -3,6 +3,6 @@
 return [
     'host' => 'localhost:3306',
     'user' => 'root',
-    'password' => 'secret',
-    'database' => 'kirill'
+    'password' => 'asdSKADkajsdlkrg983134ip!soapsd92',
+    'database' => 'readme2'
 ];

@@ -1,39 +1,33 @@
 <?php
 require 'requires_guest.php';
 
+/**
+ * @var mysqli $link
+ * @var array $user
+ */
+
 $action = $_GET["action"] ?? null;
 $address = $_GET["address"] ?? null;
 $profile_id = $_GET["profile_id"] ?? null;
 $post_id = $_GET["post_id"] ?? null;
 $post_author = $_GET["post_author"] ?? null;
 
-$profile_data = null;
-
-$error = false;
-
-if (isset($address)) {
-    $sql = null;
-    $target_id = $profile_id ?? $post_author;
-
-    $is_subscribed = checkIsUserSubscribed($link, $user['id'], $target_id);
-
-    if ($action === 'sub' && !$is_subscribed) {
-        $sql = "INSERT INTO `subscriptions` (`user`, `subscriber`) VALUES (?, ?)";
-    } else if ($action === 'unsub' && $is_subscribed) {
-        $sql = "DELETE FROM `subscriptions` s WHERE s.user = ? AND s.subscriber = ?";
-    } else {
-        $error = true;
-    }
-
-    if (!$error) {
-        db_query_prepare_stmt($link, $sql, [$target_id, $user['id']], QUERY_EXECUTE);
-    }
-
-    match ($address) {
-        'profile' => header("Location: /$address" . ".php?id=$profile_id" . "&act=$action"),
-        'post' => header("Location: /$address" . ".php?id=$post_id" . "&act=$action" . "&author=$post_author"),
-        default => header("Location: /")
-    };
+if (!isset($address)) {
+    header('Location: /');
+    exit();
 }
 
-exit();
+$target_id = $profile_id ?? $post_author;
+
+$is_subscribed = check_is_user_subscribed($link, $user['id'], $target_id);
+
+$sql = $is_subscribed ? "DELETE FROM subscriptions s WHERE s.user = ? AND s.subscriber = ?"
+    : "INSERT INTO subscriptions (user, subscriber) VALUES (?, ?)";
+
+db_query_prepare_stmt($link, $sql, [$target_id, $user['id']]);
+
+match ($address) {
+    'profile' => header("Location: /$address" . ".php?id=$profile_id"),
+    'post' => header("Location: /$address" . ".php?id=$post_id" . "&author=$post_author"),
+    default => header("Location: /")
+};

@@ -1,24 +1,54 @@
 <?php
 require_once 'requires_guest.php';
+require_once 'helpers.php';
+require_once 'validateHelpers.php';
+
+/**
+ * @var mysqli $link
+ * @var array $user
+ */
 
 $search_data = $_GET['search'] ?? null;
 
-function postsSearchFilter($link, $filter): array
+/**
+ * Возвращает название класса для типа контента по его идентификатору
+ *
+ * @param mysqli $link
+ * @param int $id
+ * @return string|false
+ */
+function get_content_class_by_id(mysqli $link, int $id): string|false
 {
-    $sql = "SELECT p.*, u.avatar_url, u.login FROM `posts` p" .
-        " JOIN `users` u ON p.author = u.id" .
-        " WHERE MATCH(`title`, `content`) AGAINST(?)";
+    $sql = "SELECT * FROM content_types" .
+        " WHERE id = ?";
 
-    $stmt = db_get_prepare_stmt($link, $sql, [$filter]);
+    $result = db_query_prepare_stmt($link, $sql, [$id]);
 
-    mysqli_stmt_execute($stmt);
+    if (!$result) {
+        return false;
+    }
 
-    $result = mysqli_stmt_get_result($stmt);
-
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return $result[count($result) - 1]["class_name"];
 }
 
-$posts = $search_data ? postsSearchFilter($link, $search_data) : [];
+/**
+ * Фильтр поиска, возвращает посты с совпадениями в контенте или названии
+ *
+ * @param mysqli $link
+ * @param string $filter
+ *
+ * @return array|false
+ */
+function posts_search_filter(mysqli $link, string $filter): array|false
+{
+    $sql = "SELECT p.*, u.avatar_url, u.login FROM posts p"
+        . " JOIN users u ON p.author = u.id"
+        . " WHERE MATCH(`title`, content) AGAINST(?)";
+
+    return db_query_prepare_stmt($link, $sql, [$filter]);
+}
+
+$posts = $search_data ? posts_search_filter($link, $search_data) : [];
 
 $content = include_template('search-result.php', [
     "search_data" => $search_data,
@@ -34,7 +64,6 @@ $layout = include_template('layout.php', [
     "content" => $content,
     "title" => "readme: поиск",
     "user" => $user,
-    "is_auth" => $is_auth,
 ]);
 
 print($layout);
