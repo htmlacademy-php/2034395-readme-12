@@ -1,8 +1,8 @@
-CREATE DATABASE kirill
+CREATE DATABASE readme2
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_general_ci;
 
-use kirill;
+use readme2;
 
 CREATE TABLE `users`
 (
@@ -32,7 +32,7 @@ CREATE TABLE `posts_hashtags`
 (
   `id`       INT PRIMARY KEY,
   `hashtags` INT,
-  FOREIGN KEY (`hashtags`) REFERENCES `hashtags` (`id`)
+  FOREIGN KEY (`hashtags`) REFERENCES `hashtags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `posts`
@@ -48,9 +48,9 @@ CREATE TABLE `posts`
   `image_url`    VARCHAR(2048),
   `video_url`    VARCHAR(2048),
   `site_url`     VARCHAR(2048),
-  FOREIGN KEY (`author`) REFERENCES `users` (`id`),
-  FOREIGN KEY (`content_type`) REFERENCES `content_types` (`id`),
-  FOREIGN KEY (`hashtags`) REFERENCES `posts_hashtags` (`id`)
+  FOREIGN KEY (`author`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`content_type`) REFERENCES `content_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`hashtags`) REFERENCES `posts_hashtags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `views`
@@ -67,8 +67,8 @@ CREATE TABLE `comments`
   `content` TEXT,
   `author`  INT,
   `post`    INT,
-  FOREIGN KEY (`author`) REFERENCES `users` (`id`),
-  FOREIGN KEY (`post`) REFERENCES `posts` (`id`)
+  FOREIGN KEY (`author`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`post`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `likes`
@@ -76,8 +76,8 @@ CREATE TABLE `likes`
   `id`   INT AUTO_INCREMENT PRIMARY KEY,
   `user` INT,
   `post` INT,
-  FOREIGN KEY (`user`) REFERENCES `users` (`id`),
-  FOREIGN KEY (`post`) REFERENCES `posts` (`id`)
+  FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`post`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `messages`
@@ -87,16 +87,16 @@ CREATE TABLE `messages`
   `text`      TEXT,
   `sender`    INT,
   `recipient` INT,
-  FOREIGN KEY (`sender`) REFERENCES `users` (`id`),
-  FOREIGN KEY (`recipient`) REFERENCES `users` (`id`)
+  FOREIGN KEY (`sender`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`recipient`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `subscriptions`
 (
   `user`       INT,
   `subscriber` INT,
-  FOREIGN KEY (`user`) REFERENCES `users` (`id`),
-  FOREIGN KEY (`subscriber`) REFERENCES `users` (`id`)
+  FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`subscriber`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE FULLTEXT INDEX `posts_ft_search` ON `posts` (`title`, `content`);

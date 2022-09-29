@@ -1,5 +1,5 @@
 <?php
-require 'requires_guest.php';
+require 'requires_auth.php';
 
 /**
  * @var mysqli $link
