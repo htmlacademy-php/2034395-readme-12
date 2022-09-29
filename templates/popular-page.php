@@ -173,7 +173,7 @@
                         </h2>
                     </header>
                     <div class="post__main">
-                        <?php if ($post['name'] == 'quote'): ?>
+                        <?php if ($post['name'] === 'quote'): ?>
                             <blockquote>
                                 <p>
                                     <?= htmlspecialchars($post['content']) ?>
@@ -182,7 +182,7 @@
                             </blockquote>
                         <?php endif; ?>
 
-                        <?php if ($post['name'] == 'text'): ?>
+                        <?php if ($post['name'] === 'text'): ?>
                             <?php $postTextData = show_data($post['content']) ?>
                             <p><?= htmlspecialchars($postTextData['text']) ?></p>
                             <?php if ($postTextData['isLong']): ?>
@@ -284,7 +284,7 @@
                 </article>
             <?php endforeach; ?>
         </div>
-        <?php if ($posts_count > 9): ?>
+        <?php if ($posts_count > 6): ?>
             <div class="popular__page-links">
                 <a
                     class="popular__page-link popular__page-link--prev button button--gray"
@@ -294,7 +294,7 @@
                 </a>
                 <a
                     class="popular__page-link popular__page-link--next button button--gray"
-                    href="../popular.php?tab=<?= $tab ?>&page=<?= min($page + 1, round($posts_count / 6)) ?>&sort=<?= $sort ?>"
+                    href="../popular.php?tab=<?= $tab ?>&page=<?= min($page + 1, ceil($posts_count / 6)) ?>&sort=<?= $sort ?>"
                 >
                     Следующая страница
                 </a>

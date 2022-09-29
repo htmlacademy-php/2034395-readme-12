@@ -1,3 +1,12 @@
+<?php
+
+/**
+ * @var bool $isEmailWrong
+ * @var bool $isPasswordWrong
+ */
+
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -146,7 +155,7 @@
         </section>
         <section class="authorization">
             <h2 class="visually-hidden">Авторизация</h2>
-            <form class="authorization__form form" action="../login.php" method="post">
+            <form class="authorization__form form" action="../index.php" method="post">
                 <div class="authorization__input-wrapper form__input-wrapper">
                     <input class="authorization__input authorization__input--login form__input" type="email"
                            name="email"
@@ -155,7 +164,12 @@
                         <use xlink:href="#icon-input-user"></use>
                     </svg>
                     <label class="visually-hidden">Email</label>
-                    <span class="form__error-label form__error-label--login">Неверный email</span>
+                    <span
+                        class="form__error-label form__error-label--login"
+                        style="<?= $isEmailWrong ? 'font-size: 14px;' : '' ?>"
+                    >
+                        Неверный email
+                    </span>
                 </div>
                 <div class="authorization__input-wrapper form__input-wrapper">
                     <input class="authorization__input authorization__input--password form__input" type="password"
@@ -164,7 +178,12 @@
                         <use xlink:href="#icon-input-password"></use>
                     </svg>
                     <label class="visually-hidden">Пароль</label>
-                    <span class="form__error-label">Пароли не совпадают</span>
+                    <span
+                        class="form__error-label"
+                        style="<?= $isPasswordWrong ? 'font-size: 14px;' : '' ?>"
+                    >
+                        Пароли не совпадают
+                    </span>
                 </div>
                 <a class="authorization__recovery" href="#">Восстановить пароль</a>
                 <button class="authorization__submit button button--main" type="submit">Войти</button>

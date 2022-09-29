@@ -80,7 +80,7 @@
                         <b class="form__invalid-slogan">Пожалуйста, исправьте следующие ошибки:</b>
                         <ul class="form__invalid-list">
                             <?php foreach ($errors as $el): ?>
-                                <li class="form__invalid-item"><?= $el['text'] ?></li>
+                                <li class="form__invalid-item"><?= $el ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>

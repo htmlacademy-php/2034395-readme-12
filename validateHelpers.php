@@ -23,6 +23,81 @@ function is_date_valid(string $date): bool
 }
 
 /**
+ * Валидация электронной почты
+ *
+ * @param mysqli $link
+ * @param string $email
+ *
+ * @return array|false
+ */
+function validate_email(mysqli $link, string $email): array|false
+{
+    $sql = "SELECT * FROM users WHERE email = ?";
+
+    $result = db_query_prepare_stmt($link, $sql, [$email]);
+
+    $isEmailUsed = count($result) > 0;
+
+    if ($isEmailUsed) {
+        return 'Указанный адрес электронной почты уже зарегистрирован.';
+    }
+
+    return false;
+}
+
+/**
+ * Валидация регистрационных данных
+ *
+ * @param mysqli $link
+ * @param array $data
+ *
+ * @return array
+ */
+function validate_registration_data(mysqli $link, array $data): array
+{
+    $files_path = __DIR__ . '/uploads/';
+
+    $errors = [];
+
+    $login = $data['login'] ?? null;
+    $email = $data['email'] ?? null;
+    $password = $data['password'] ?? null;
+    $re_password = $data['password-repeat'] ?? null;
+    $file = $_FILES['userpic-file'] ?? null;
+
+    if (strlen($login) === 0) {
+        $errors[] = 'Придумайте логин.';
+    }
+    if (strlen($email) === 0) {
+        $errors[] = 'Укажите адрес своей электронной почты.';
+    }
+    if (validate_email($link, $email)) {
+        $errors[] = validate_email($link, $email);
+    }
+    if (strlen($password) === 0) {
+        $errors[] = 'Придумайте пароль.';
+    }
+    if (strlen($re_password) === 0) {
+        $errors[] = 'Повторите придуманный пароль.';
+    }
+    if ($password != $re_password) {
+        $errors[] = 'Пароли не совпадают.';
+    }
+    if ($file['name'] && validate_file($file, $files_path)) {
+        $errors[] = validate_file($file, $files_path);
+    }
+
+    return [
+        "data" => [
+            "email" => $email,
+            "login" => $login,
+            "password" => $password,
+        ],
+        "errors" => $errors
+    ];
+}
+
+/**
  * Проверяет переданную информацию о файле и перемещает его из временного хранилища
  *
  * @param array $file
@@ -30,21 +105,14 @@ function is_date_valid(string $date): bool
  *
  * @return array|bool
  */
-function validate_file(array $file, string $path): array|bool
+function validate_file(array $file, string $path): string|bool
 {
-    if (!$file['name']) {
-        return ['target' => 'file', 'text' => 'Прикрепите или укажите ссылку на изображение.'];
-    }
-
     $mime = $file['type'];
     $name = $file['name'];
     $tmp_name = $file['tmp_name'];
 
     if ($mime != 'image/gif' && $mime != 'image/jpeg' && $mime != 'image/png') {
-        return [
-            'target' => 'file',
-            'text' => 'Вы можете загрузить файлы только в следующих форматах: .png, .jpeg, .gif.'
-        ];
+        return 'Вы можете загрузить файлы только в следующих форматах: .png, .jpeg, .gif.';
     }
 
     move_uploaded_file($tmp_name, $path . $name);
@@ -82,6 +150,105 @@ function show_data(string $text, int $maxSymbols = 300): array
     }
 
     return $result;
+}
+
+/**
+ * Проверяет все отправленные данные и возвращает подготовленный массив
+ *
+ * @param array $data
+ * @param mysqli $link
+ * @param string $type
+ * @param array $user
+ *
+ * @return array
+ */
+function validate_post_data(array $data, mysqli $link, string $type, array $user): array
+{
+    $content_type = null;
+
+    $sql = "SELECT ct.id FROM content_types ct WHERE `name` = ?";
+
+    $result = db_query_prepare_stmt($link, $sql, [$type]);
+
+    if (count($result) === 1) {
+        $content_type = $result[0]['id'];
+    }
+
+    $files_path = __DIR__ . '/uploads/';
+
+    $errors = [];
+
+    $title = $data[$type . '-heading'] ?? null;
+    $content = $data[$type . '-content'] ?? null;
+    $author = $data[$type . '-author'] ?? null;
+    $image_url = $data['photo-url'] ?? null;
+    $video_url = $data['video-url'] ?? null;
+    $site_url = $data[$type . '-url'] ?? null;
+    $file = $_FILES['userpic-file-photo'] ?? null;
+
+    $url = match ($type) {
+        'photo' => strlen($file['name']) > 0 ? $files_path . $file['name'] : $image_url,
+        'video' => $video_url,
+        'link' => $site_url,
+        default => null
+    };
+
+    if (strlen($title) === 0) {
+        $errors[] = 'Укажите заголовок.';
+    }
+    if (strlen($title) > 70) {
+        $errors[] = 'Заголовок не может превышать 70 символов.';
+    }
+    if ($type === 'text' && strlen($content) === 0) {
+        $errors[] = 'Напишите текст поста';
+    }
+    if ($type === 'quote') {
+        if (strlen($content) === 0) {
+            $errors[] = 'Укажите текст цитаты';
+        }
+
+        if (strlen($author) === 0) {
+            $errors[] = 'Укажите автора цитаты';
+        }
+    }
+    if ($type === 'video' || $type === 'link') {
+        $isUrlValid = filter_var($url, FILTER_VALIDATE_URL);
+
+        if (strlen($url) === 0 || !$isUrlValid) {
+            $errors[] = 'Укажите корректную ссылку на источник.';
+        }
+
+        if ($type === 'video' && !check_youtube_url($url)) {
+            $errors[] = 'Указанная в ссылке видеозапись недоступна.';
+        }
+    }
+    if ($type === 'photo') {
+        if (strlen($file['name']) > 0) {
+            $errors[] = validate_file($file, $files_path);
+        }
+
+        if (strlen($url) > 0 && !filter_var($url, FILTER_VALIDATE_URL)) {
+            $errors[] = 'Укажите корректную ссылку на изображение';
+        }
+
+        if (strlen($file['name']) === 0 && strlen($url) === 0) {
+            $errors[] = 'Прикрепите файл или укажите ссылку на изображение.';
+        }
+    }
+
+    return [
+        "data" => [
+            "title" => $title,
+            "content" => $content,
+            "cite_author" => $author,
+            "content_type" => $content_type,
+            "author" => $user['id'],
+            "image_url" => $image_url,
+            "video_url" => $video_url,
+            "site_url" => $site_url,
+        ],
+        "errors" => $errors
+    ];
 }
 
 /**

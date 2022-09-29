@@ -14,21 +14,3 @@ if (!$link) {
 }
 
 mysqli_set_charset($link, "utf8mb4");
-
-$user = [];
-$email = $_COOKIE['user_email'] ?? '';
-$password = $_COOKIE['user_password'] ?? '';
-
-$sql = "SELECT * FROM users WHERE email = ?";
-
-$user = db_query_prepare_stmt($link, $sql, [$email]);
-
-if (count($user) === 1) {
-    $user = $user[0];
-
-    if (!password_verify($user['password'], $password)) {
-        set_user_data_cookies("", "", time() - 3600);
-        header("Location: /");
-        exit();
-    }
-}

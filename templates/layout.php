@@ -5,8 +5,8 @@
  * @var string $content
  * @var array $user
  */
-$avatar = $user['avatar_url'] ?? 'userpic.jpg';
 
+$avatar = $user['avatar_url'] ?? 'userpic.jpg';
 ?>
 
 <!DOCTYPE html>
@@ -135,19 +135,19 @@ $avatar = $user['avatar_url'] ?? 'userpic.jpg';
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
-                        <a class="header__page-link <?php if ($target == 'popular'): ?>header__page-link--active<?php endif; ?>"
+                        <a class="header__page-link <?php if (isset($target) && $target === 'popular'): ?>header__page-link--active<?php endif; ?>"
                            title="Популярный контент" href="../popular.php?tab=all&page=1&sort=views">
                             <span class="visually-hidden">Популярный контент</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--feed">
-                        <a class="header__page-link <?php if ($target == 'feed'): ?>header__page-link--active<?php endif; ?>"
+                        <a class="header__page-link <?php if (isset($target) && $target === 'feed'): ?>header__page-link--active<?php endif; ?>"
                            href="#" title="Моя лента">
                             <span class="visually-hidden">Моя лента</span>
                         </a>
                     </li>
                     <li class="header__my-page header__my-page--messages">
-                        <a class="header__page-link <?php if ($target == 'messages'): ?>header__page-link--active<?php endif; ?>"
+                        <a class="header__page-link <?php if (isset($target) && $target === 'messages'): ?>header__page-link--active<?php endif; ?>"
                            href="#" title="Личные сообщения">
                             <span class="visually-hidden">Личные сообщения</span>
                         </a>
